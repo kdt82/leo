@@ -1,0 +1,20 @@
+Using generated image ID: 799af9b2-2b43-45c8-a4eb-3c3184b7194f
+
+============================================================
+TEST 1: imagePrompts as array of string IDs (GENERATED image)
+============================================================
+Status: 400
+Response: {"error":"This model requires a minimum of 1 image and a maximum of 8 images.","path":"$","code":"unexpected"}
+
+============================================================
+TEST 2: With enhancePrompt enabled
+============================================================
+Status: 400
+Response: {"error":"This model requires a minimum of 1 image and a maximum of 8 images.","path":"$","code":"unexpected"}
+
+============================================================
+TEST 3: Multiple imagePrompts
+============================================================
+Image IDs: ['799af9b2-2b43-45c8-a4eb-3c3184b7194f', 'af9d1c78-fae2-4756-bbca-f5266a5b0d73', '2d7dbb28-9adc-419e-a452-ca0acbab68f6']
+Status: 400
+Response: {"error":"This model requires a minimum of 1 image and a maximum of 8 images.","path":"$","code":"unexpected"}

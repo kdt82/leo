@@ -1,0 +1,12 @@
+Testing contextImages with 'weight' parameter...
+============================================================
+Test 1 (weight in contextImage): 400
+Response: {"error":"field 'weight' not found in type: 'ContextImagesInput'","path":"$.selectionSet.sdGenerationJob.args.arg1.contextImages[0].weight","code":"validation-failed"}
+
+============================================================
+Test 2 (init_strength top level): 400
+Response: {"error":"This model requires a minimum of 1 image and a maximum of 8 images.","path":"$","code":"unexpected"}
+
+============================================================
+Test 3 (strength in contextImage): 400
+Response: {"error":"field 'strength' not found in type: 'ContextImagesInput'","path":"$.selectionSet.sdGenerationJob.args.arg1.contextImages[0].strength","code":"validation-failed"}

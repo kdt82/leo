@@ -1,0 +1,45 @@
+{
+  "generated_images": [
+    {
+      "url": "https://cdn.leonardo.ai/users/94c914aa-9496-4dd4-be34-d78725c4ab39/generations/ae835daa-c9d8-4c05-810d-288c26f0ddff/segments/1:1:1/Default_with_a_Fivepointed_golden_star_emblem_on_his_chest_A_d_0.jpg",
+      "nsfw": false,
+      "id": "f96f916b-2578-4255-8ddc-78ec7a3f4753",
+      "likeCount": 0,
+      "motionMP4URL": null,
+      "generated_image_variation_generics": []
+    }
+  ],
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "motion": null,
+  "motionModel": null,
+  "motionStrength": null,
+  "prompt": "with a Five-pointed golden star emblem on his chest, A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a cape made of overlapping green leaves, surrounded by golden glow, standing in a cosmic nebula with swirling stars, power stance with fist down, wearing dark sunglasses. Centered composition, head-to-toe, full-body, square format.",
+  "negativePrompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "imageHeight": 1024,
+  "imageToVideo": null,
+  "imageWidth": 1024,
+  "inferenceSteps": null,
+  "seed": 891005638,
+  "ultra": null,
+  "public": false,
+  "scheduler": null,
+  "sdVersion": "FLUX_OMNI",
+  "status": "COMPLETE",
+  "presetStyle": "DYNAMIC",
+  "initStrength": null,
+  "guidanceScale": null,
+  "id": "ae835daa-c9d8-4c05-810d-288c26f0ddff",
+  "createdAt": "2025-12-15T10:33:55.76",
+  "promptMagic": false,
+  "promptMagicVersion": null,
+  "promptMagicStrength": null,
+  "photoReal": null,
+  "photoRealStrength": null,
+  "fantasyAvatar": null,
+  "prompt_moderations": [
+    {
+      "moderationClassification": []
+    }
+  ],
+  "generation_elements": []
+}

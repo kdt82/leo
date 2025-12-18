@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "leonardo-ai": {
+            "url": "https://mcp.leonardo.ai/v1/mcp",
+            "headers": {
+                "API-Key": "65721a9a-ea84-48f1-bea9-a7d04f83000b"
+            }
+        }
+    }
+}
