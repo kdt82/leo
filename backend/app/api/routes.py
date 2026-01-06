@@ -812,13 +812,9 @@ async def sync_generations(
             raise HTTPException(status_code=400, detail="Could not fetch user details")
         user_id = user_details[0]['user']['id']
         
-        # 2. Get existing batch_ids from our database (created by this app)
-        from app.services.db import get_existing_batch_ids
-        existing_batch_ids = await get_existing_batch_ids()
-        print(f"[SYNC] Found {len(existing_batch_ids)} existing batch_ids in database")
-        
-        target_import_count = limit
-        max_scan_depth = limit
+        # Scan deep to find all matching generations
+        target_import_count = 10000  # High limit to get everything
+        max_scan_depth = 10000
         
         synced_count = 0
         skipped_count = 0
@@ -827,9 +823,12 @@ async def sync_generations(
         offset = 0
         batch_size = 50 
         
-        print(f"[SYNC] Starting sync for user {user_id}. Target: {target_import_count}. Will match against {len(existing_batch_ids)} known batches.")
+        # Pattern: prompts that start with a number (your app's format: "4312 \"description...\"")
+        prompt_pattern = re.compile(r'^\d+\s*["\[]')
         
-        while synced_count < target_import_count and scanned_count < max_scan_depth:
+        print(f"[SYNC] Starting sync for user {user_id}. Will scan up to {max_scan_depth} generations for app-generated prompts.")
+        
+        while scanned_count < max_scan_depth:
             current_batch_limit = batch_size
                 
             resp = await client.get_user_generations(user_id, offset=offset, limit=current_batch_limit)
@@ -846,15 +845,15 @@ async def sync_generations(
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
-                gen_id = gen.get('id')
+                prompt = gen.get('prompt') or ""
                 
-                # Only import if this batch_id exists in our database (created by this app)
-                if gen_id not in existing_batch_ids:
+                # Filter: Only import if prompt starts with a number (app-generated format)
+                if not prompt_pattern.match(prompt.strip()):
                     skipped_count += 1
                     continue
                 
-                # This batch was created by this app - import it!
-                prompt = gen.get('prompt') or ""
+                # This prompt matches app format - import it!
+                gen_id = gen.get('id')
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
                 model_id = gen.get('modelId')
@@ -916,7 +915,6 @@ async def sync_generations(
             "count": synced_count, 
             "scanned": scanned_count, 
             "skipped": skipped_count,
-            "existing_batches": len(existing_batch_ids),
             "last_error": last_error
         }
         
