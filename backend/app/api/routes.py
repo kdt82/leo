@@ -793,16 +793,14 @@ async def submit_batch(request: BatchRequest):
 @router.post("/generations/sync")
 async def sync_generations(
     apiKey: str = Body(..., embed=True), 
-    limit: int = Body(2000, embed=True),
-    days: int = Body(60, embed=True)
+    limit: int = Body(1000, embed=True)
 ):
     """
-    Fetch generations from Leonardo from the last X days.
-    - limit: Safety limit for max generations to process (default 2000)
-    - days: Number of days of history to fetch (default 60)
+    Fetch recent generations from Leonardo and save to local DB.
+    - limit: Max number of generations to fetch (default 1000)
     """
     try:
-        from datetime import datetime, timedelta, timezone
+        from datetime import datetime
         
         client = LeonardoClient(api_key=apiKey)
         
@@ -817,16 +815,12 @@ async def sync_generations(
         offset = 0
         batch_size = 50 
         
-        # Calculate cutoff date
-        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
-        print(f"[SYNC] Starting sync for user {user_id}. Fetching last {days} days (cutoff: {cutoff_date.isoformat()}).")
-        
         from app.services.db import insert_generation
         import re
         
-        stop_sync = False
+        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}")
         
-        while synced_count < limit and not stop_sync:
+        while synced_count < limit:
             # 2. Fetch Generation Batch
             current_limit = min(batch_size, limit - offset)
             if current_limit <= 0:
@@ -840,29 +834,16 @@ async def sync_generations(
                 break
             
             for gen in generations:
-                created_str = gen.get('createdAt')
-                # Parse date: 2023-11-15T12:00:00.000 (roughly)
-                try:
-                    # Handle variable precision if needed, but usually isoformat works
-                    created_at = datetime.fromisoformat(created_str.replace('Z', '+00:00'))
-                except:
-                    # Fallback if parsing fails, assume it's new enough? Or skip.
-                    continue
-                
-                # Check if we've gone back too far
-                if created_at < cutoff_date:
-                    print(f"[SYNC] Reached generation from {created_str}, which is older than {days} days. Stopping.")
-                    stop_sync = True
-                    break
-                
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
+                # Basic data extraction
                 prompt = gen.get('prompt') or ""
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
                 model_id = gen.get('modelId')
                 gen_seed = gen.get('seed')
+                created_str = gen.get('createdAt') # Pass string directly, DB handles it
                 gen_id = gen.get('id')
                 
                 for img in gen.get('generated_images', []):
@@ -888,7 +869,7 @@ async def sync_generations(
                             "created_at": created_str
                         }
                         
-                        # Try to parse number from prompt for metadata (optional, doesn't filter)
+                        # Try to parse number from prompt for metadata (optional)
                         number_match = re.match(r'^\[?(\d+)\]?', prompt.strip())
                         if number_match:
                             data['prompt_number'] = int(number_match.group(1))
@@ -898,8 +879,6 @@ async def sync_generations(
                         synced_count += 1
                     except Exception as img_e:
                         print(f"[SYNC ERROR] Failed to import image {img.get('id')}: {img_e}")
-                        import traceback
-                        traceback.print_exc()
                         continue
             
             offset += len(generations)
@@ -912,6 +891,9 @@ async def sync_generations(
         
     except Exception as e:
         print(f"Sync error: {e}")
+        # Print full traceback for debugging
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/jobs/{batch_id}")
