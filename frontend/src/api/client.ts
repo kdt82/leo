@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API URL - in production this comes from build-time env var
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
-import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey } from '../api/client';
+import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey, API_URL } from '../api/client';
 import clsx from 'clsx';
 
 interface Props {
@@ -101,6 +101,15 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
     const [batchId, setBatchId] = useState<string | null>(null);
     const [jobStatus, setJobStatus] = useState<any>(null);
 
+    // Cost tracking state
+    const [costStats, setCostStats] = useState<{
+        total_images: number;
+        total_cost_usd: number;
+        batches: number;
+        since: string;
+        breakdown: Array<{ date: string; count: number }>;
+    } | null>(null);
+
     useEffect(() => {
         // Load models
         apiClient.get('/models', { params: { apiKey } })
@@ -110,6 +119,13 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
             })
             .catch(console.error);
     }, [apiKey]);
+
+    // Fetch cost statistics
+    useEffect(() => {
+        apiClient.get('/cost-stats', { params: { since: '2026-12-15', cost_per_image: 0.08 } })
+            .then(res => setCostStats(res.data))
+            .catch(console.error);
+    }, []);
 
     useEffect(() => {
         if (!batchId) return;
@@ -137,9 +153,10 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                 const formData = new FormData();
                 formData.append('apiKey', apiKey);
                 formData.append('file', refImage);
-                const uploadRes = await fetch('http://localhost:8000/api/v1/upload/init-image', {
+                const uploadRes = await fetch(`${API_URL}/upload/init-image`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    credentials: 'include'  // Include cookies for auth
                 });
                 if (!uploadRes.ok) {
                     throw new Error(`Upload failed: ${uploadRes.status} `);
@@ -667,7 +684,8 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                                     <span className="text-sm text-zinc-400">Estimated Cost</span>
                                     <div className="text-right">
                                         <div className="text-xl font-bold text-yellow-400">{estimatedCost.toLocaleString()} tokens</div>
-                                        <div className="text-lg font-semibold text-green-400">${dollarCost.toFixed(2)} USD</div>
+                                        {/* <div className="text-sm font-semibold text-zinc-500">${dollarCost.toFixed(2)} API Cost</div> */}
+                                        <div className="text-lg font-bold text-emerald-400">${(totalImages * 0.08).toFixed(2)} (@ 0.08)</div>
                                     </div>
                                 </div>
                                 <div className="text-xs text-zinc-500 space-y-1 border-t border-zinc-800 pt-2">
@@ -997,12 +1015,66 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
             {/* Right Canvas / Results */}
             < div className="flex-1 bg-background p-8 overflow-y-auto" >
                 {!batchId && !jobStatus ? (
-                    <div className="h-full flex items-center justify-center text-zinc-700 select-none">
-                        <div className="text-center">
+                    <div className="h-full flex flex-col items-center justify-center text-zinc-700 select-none">
+                        <div className="text-center mb-8">
                             <ImageIcon className="w-24 h-24 mx-auto mb-4 opacity-20" />
                             <p className="text-xl font-medium">Ready to generate</p>
                             <p className="text-sm">Configure your batch and press Start</p>
                         </div>
+
+                        {/* Cost Calculator Widget */}
+                        {costStats && (
+                            <div className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-md w-full shadow-xl">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
+                                        <span className="text-lg">💰</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white font-semibold">Generation Cost Tracker</h3>
+                                        <p className="text-xs text-zinc-400">Since Dec 15, 2026</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div className="bg-zinc-800/50 rounded-xl p-4 text-center">
+                                        <div className="text-3xl font-bold text-white mb-1">
+                                            {costStats.total_images.toLocaleString()}
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Images Generated</div>
+                                    </div>
+                                    <div className="bg-zinc-800/50 rounded-xl p-4 text-center">
+                                        <div className="text-3xl font-bold text-emerald-400 mb-1">
+                                            ${costStats.total_cost_usd.toFixed(2)}
+                                        </div>
+                                        <div className="text-xs text-zinc-400">Total Cost</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between items-center text-xs text-zinc-500 border-t border-zinc-700 pt-3">
+                                    <span>{costStats.batches} batch{costStats.batches !== 1 ? 'es' : ''}</span>
+                                    <span className="flex items-center gap-1">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                        $0.08 per image
+                                    </span>
+                                </div>
+
+                                {costStats.breakdown && costStats.breakdown.length > 0 && (
+                                    <div className="mt-4 pt-4 border-t border-zinc-700">
+                                        <div className="text-xs text-zinc-400 mb-2">Recent Activity</div>
+                                        <div className="space-y-1 max-h-32 overflow-y-auto">
+                                            {costStats.breakdown.slice(0, 5).map((day, idx) => (
+                                                <div key={idx} className="flex justify-between text-xs">
+                                                    <span className="text-zinc-500">{day.date}</span>
+                                                    <span className="text-zinc-300">
+                                                        {day.count} images · <span className="text-emerald-400">${(day.count * 0.08).toFixed(2)}</span>
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="max-w-5xl mx-auto">
@@ -1011,7 +1083,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                             <div className="flex gap-4 items-center">
                                 {jobStatus?.completed > 0 && (
                                     <a
-                                        href={`http://localhost:8000/api/v1/jobs/${batchId}/zip`}
+                                        href={`${API_URL}/jobs/${batchId}/zip`}
                                         target="_blank"
                                         className="flex items-center gap-2 text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded transition text-white"
                                     >
@@ -1643,7 +1715,7 @@ function GalleryView() {
         if (batchFilter) params.append('batch', batchFilter);
         if (impFilter) params.append('imp', impFilter);
 
-        window.open(`http://localhost:8000/api/v1/export?${params.toString()}`, '_blank');
+        window.open(`${API_URL}/export?${params.toString()}`, '_blank');
     };
 
     const handleTag = async (id: string, tag: string) => {
@@ -2431,9 +2503,10 @@ function ClassifierView() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch('http://localhost:8000/api/v1/classify-prompts', {
+            const response = await fetch(`${API_URL}/classify-prompts`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
 
             if (!response.ok) {
@@ -2458,9 +2531,10 @@ function ClassifierView() {
         formData.append('file', file);
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/classify-prompts/download', {
+            const response = await fetch(`${API_URL}/classify-prompts/download`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
 
             if (!response.ok) throw new Error('Download failed');

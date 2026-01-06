@@ -981,3 +981,34 @@ async def download_batch_zip(batch_id: str):
     zip_path = f"{found_dir}.zip"
     
     return FileResponse(zip_path, media_type='application/zip', filename=f"batch_{batch_id}.zip")
+
+
+@router.get("/cost-stats")
+async def get_cost_stats(
+    since: str = Query("2026-12-15", description="Start date (YYYY-MM-DD) for cost calculation"),
+    cost_per_image: float = Query(0.08, description="Cost per image in USD")
+):
+    """
+    Get cost statistics for generations since a specified date.
+    Returns image count and total cost calculation.
+    """
+    from app.services.db import get_cost_statistics
+    
+    try:
+        since_date = datetime.strptime(since, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+    
+    stats = await get_cost_statistics(since_date)
+    
+    total_images = stats.get("total_images", 0)
+    total_cost = total_images * cost_per_image
+    
+    return {
+        "since": since,
+        "total_images": total_images,
+        "cost_per_image": cost_per_image,
+        "total_cost_usd": round(total_cost, 2),
+        "batches": stats.get("batch_count", 0),
+        "breakdown": stats.get("breakdown", [])
+    }

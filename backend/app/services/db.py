@@ -676,3 +676,97 @@ def generate_export_csv(records: List[Dict[str, Any]], output_path: str) -> str:
         writer.writerows(records)
     
     return output_path
+
+
+# ============================================================
+# COST STATISTICS
+# ============================================================
+
+async def get_cost_statistics(since_date: datetime) -> Dict[str, Any]:
+    """Get image count statistics since a specified date for cost calculation."""
+    if settings.USE_POSTGRES:
+        return await _get_cost_statistics_postgres(since_date)
+    else:
+        return _get_cost_statistics_sqlite(since_date)
+
+
+async def _get_cost_statistics_postgres(since_date: datetime) -> Dict[str, Any]:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        # Get total count
+        total = await conn.fetchval(
+            'SELECT COUNT(*) FROM generations WHERE created_at >= $1',
+            since_date
+        )
+        
+        # Get batch count
+        batch_count = await conn.fetchval(
+            'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= $1 AND batch_id IS NOT NULL',
+            since_date
+        )
+        
+        # Get daily breakdown (last 30 days)
+        breakdown_rows = await conn.fetch('''
+            SELECT 
+                DATE(created_at) as date,
+                COUNT(*) as count
+            FROM generations 
+            WHERE created_at >= $1
+            GROUP BY DATE(created_at)
+            ORDER BY date DESC
+            LIMIT 30
+        ''', since_date)
+        
+        breakdown = [
+            {"date": str(row['date']), "count": row['count']}
+            for row in breakdown_rows
+        ]
+        
+        return {
+            "total_images": total or 0,
+            "batch_count": batch_count or 0,
+            "breakdown": breakdown
+        }
+
+
+def _get_cost_statistics_sqlite(since_date: datetime) -> Dict[str, Any]:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    
+    since_str = since_date.isoformat()
+    
+    # Get total count
+    c.execute('SELECT COUNT(*) FROM generations WHERE created_at >= ?', (since_str,))
+    total = c.fetchone()[0] or 0
+    
+    # Get batch count
+    c.execute(
+        'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= ? AND batch_id IS NOT NULL',
+        (since_str,)
+    )
+    batch_count = c.fetchone()[0] or 0
+    
+    # Get daily breakdown
+    c.execute('''
+        SELECT 
+            DATE(created_at) as date,
+            COUNT(*) as count
+        FROM generations 
+        WHERE created_at >= ?
+        GROUP BY DATE(created_at)
+        ORDER BY date DESC
+        LIMIT 30
+    ''', (since_str,))
+    
+    breakdown = [
+        {"date": row[0], "count": row[1]}
+        for row in c.fetchall()
+    ]
+    
+    conn.close()
+    
+    return {
+        "total_images": total,
+        "batch_count": batch_count,
+        "breakdown": breakdown
+    }
