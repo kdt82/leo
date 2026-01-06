@@ -1615,9 +1615,9 @@ function GalleryView() {
         try {
             const apiKey = getApiKey();
             // Sync up to 1000 items
-            await apiClient.post('/generations/sync', { apiKey, limit: 1000 });
+            const res = await apiClient.post('/generations/sync', { apiKey, limit: 1000 });
             await fetchGallery();
-            alert(`Sync process started. The gallery will update as images are added.`);
+            alert(`Sync complete! Processed ${res.data.count} images.`);
         } catch (e) {
             console.error('Sync failed:', e);
             alert('Sync failed. Check console for details.');

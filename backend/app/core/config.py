@@ -7,11 +7,13 @@ class Settings:
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "Leonardo Bulk Studio"
     
-    # CORS - configurable via environment
+    # CORS - configurable via environment, but always include localhost for safety
     BACKEND_CORS_ORIGINS: list[str] = os.getenv(
         "CORS_ORIGINS", 
-        "http://localhost:5173,http://localhost:3000"
-    ).split(",")
+        "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000"
+    ).split(",") + ["http://localhost:5173", "http://localhost:3000"]
+    # Remove duplicates
+    BACKEND_CORS_ORIGINS = list(set(BACKEND_CORS_ORIGINS))
     
     # Leonardo API
     LEONARDO_API_KEY: str | None = os.getenv("LEONARDO_API_KEY")
