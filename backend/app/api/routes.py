@@ -793,15 +793,17 @@ async def submit_batch(request: BatchRequest):
 @router.post("/generations/sync")
 async def sync_generations(
     apiKey: str = Body(..., embed=True), 
-    limit: int = Body(1000, embed=True),
-    filter_project_prompts: bool = Body(True, embed=True)
+    limit: int = Body(2000, embed=True),
+    days: int = Body(60, embed=True)
 ):
     """
-    Fetch recent generations from Leonardo and save to local DB.
-    - limit: Max number of generations to fetch (default 1000)
-    - filter_project_prompts: If True, only imports prompts starting with a number (e.g. "001..." or "[001]...")
+    Fetch generations from Leonardo from the last X days.
+    - limit: Safety limit for max generations to process (default 2000)
+    - days: Number of days of history to fetch (default 60)
     """
     try:
+        from datetime import datetime, timedelta, timezone
+        
         client = LeonardoClient(api_key=apiKey)
         
         # 1. Get User ID
@@ -813,14 +815,18 @@ async def sync_generations(
         
         synced_count = 0
         offset = 0
-        batch_size = 50 # Leonardo API limit per request
+        batch_size = 50 
+        
+        # Calculate cutoff date
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+        print(f"[SYNC] Starting sync for user {user_id}. Fetching last {days} days (cutoff: {cutoff_date.isoformat()}).")
         
         from app.services.db import insert_generation
         import re
         
-        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}")
+        stop_sync = False
         
-        while synced_count < limit:
+        while synced_count < limit and not stop_sync:
             # 2. Fetch Generation Batch
             current_limit = min(batch_size, limit - offset)
             if current_limit <= 0:
@@ -833,39 +839,43 @@ async def sync_generations(
                 print("[SYNC] No more generations found.")
                 break
             
-            batch_processed = 0
-            
             for gen in generations:
+                created_str = gen.get('createdAt')
+                # Parse date: 2023-11-15T12:00:00.000 (roughly)
+                try:
+                    # Handle variable precision if needed, but usually isoformat works
+                    created_at = datetime.fromisoformat(created_str.replace('Z', '+00:00'))
+                except:
+                    # Fallback if parsing fails, assume it's new enough? Or skip.
+                    continue
+                
+                # Check if we've gone back too far
+                if created_at < cutoff_date:
+                    print(f"[SYNC] Reached generation from {created_str}, which is older than {days} days. Stopping.")
+                    stop_sync = True
+                    break
+                
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
                 prompt = gen.get('prompt') or ""
-                
-                # Filter Logic: Only import valid project prompts if requested
-                if filter_project_prompts:
-                    # Check for "123..." or "[123]..." pattern
-                    if not re.match(r'^\[?\d+', prompt.strip()):
-                        continue
-
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
                 model_id = gen.get('modelId')
                 gen_seed = gen.get('seed')
-                created = gen.get('createdAt')
                 gen_id = gen.get('id')
                 
                 for img in gen.get('generated_images', []):
-                    # We use the Image ID as the Primary Key to support multiple images per generation
-                    # We use the Generation ID as the Batch ID to group them
+                    # Data mapping
                     data = {
                         "generationId": img['id'], 
                         "batch_id": gen_id,
                         "prompt": prompt,
-                        "prompt_number": None, # Will be parsed later or untagged
+                        "prompt_number": None,
                         "modelId": model_id,
                         "status": "COMPLETE",
                         "image_url": img['url'],
-                        "local_path": "", # Remote image, no local path yet
+                        "local_path": "", 
                         "width": width,
                         "height": height,
                         "seed": img.get('seed') or gen_seed,
@@ -874,18 +884,17 @@ async def sync_generations(
                         "num_steps": gen.get('inferenceSteps'),
                         "preset_style": gen.get('presetStyle'),
                         "imp": None,
-                        "created_at": created
+                        "created_at": created_str
                     }
                     
-                    # Try to parse number from prompt for metadata
+                    # Try to parse number from prompt for metadata (optional, doesn't filter)
                     number_match = re.match(r'^\[?(\d+)\]?', prompt.strip())
                     if number_match:
                         data['prompt_number'] = int(number_match.group(1))
                     
-                    # Insert safely (duplicates ignored)
+                    # Insert
                     await insert_generation(data)
                     synced_count += 1
-                    batch_processed += 1
             
             offset += len(generations)
             print(f"[SYNC] Processed batch. Offset: {offset}, Total Synced: {synced_count}")

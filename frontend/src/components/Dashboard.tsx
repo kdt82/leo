@@ -1610,14 +1610,14 @@ function GalleryView() {
     };
 
     const handleSync = async () => {
-        if (!confirm("This will fetch recent generations from Leonardo.ai and add them to your local library. It will filter for prompts starting with a number. Continue?")) return;
+        if (!confirm("This will fetch all generations from Leonardo.ai from the last 60 days. Continue?")) return;
         setLoading(true);
         try {
             const apiKey = getApiKey();
-            // Sync up to 1000 images, filtering for project-specific prompts
-            await apiClient.post('/generations/sync', { apiKey, limit: 1000, filter_project_prompts: true });
+            // Sync last 60 days of history, safety limit 5000 images
+            await apiClient.post('/generations/sync', { apiKey, limit: 5000, days: 60 });
             await fetchGallery();
-            alert('Sync complete!');
+            alert('Sync complete! Note: Images are synced by date (newest first).');
         } catch (e) {
             console.error('Sync failed:', e);
             alert('Sync failed. Check console for details.');
