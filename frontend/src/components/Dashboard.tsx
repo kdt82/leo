@@ -675,16 +675,13 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                         const pixelMultiplier = Math.max(0.5, Math.min(4, pixelCount / basePixels));
                         const tokensPerImage = Math.round(24 * pixelMultiplier);
                         const estimatedCost = totalImages * tokensPerImage;
-                        // Pricing: $9 per 3500 tokens
-                        const dollarCost = (estimatedCost / 3500) * 9;
-
+                        // Pricing: $0.08 per image internal cost
                         return promptCount > 0 ? (
                             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 space-y-3">
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-zinc-400">Estimated Cost</span>
                                     <div className="text-right">
                                         <div className="text-xl font-bold text-yellow-400">{estimatedCost.toLocaleString()} tokens</div>
-                                        {/* <div className="text-sm font-semibold text-zinc-500">${dollarCost.toFixed(2)} API Cost</div> */}
                                         <div className="text-lg font-bold text-emerald-400">${(totalImages * 0.08).toFixed(2)} (@ 0.08)</div>
                                     </div>
                                 </div>
