@@ -814,29 +814,35 @@ async def sync_generations(
             raise HTTPException(status_code=400, detail="Could not fetch user details")
         user_id = user_details[0]['user']['id']
         
+        # CRITICAL FIX: Separate import limit from scan limit
+        # limit: How many items we want to SAVE to our DB (e.g. 1000)
+        # scan_limit: How far back we check before giving up (safety brake, e.g. 5000)
+        target_import_count = limit
+        max_scan_depth = 5000 
+        
         synced_count = 0
+        scanned_count = 0
+        skipped_count = 0
         offset = 0
         batch_size = 50 
         
-        from app.services.db import insert_generation
-        import re
+        print(f"[SYNC] Starting sync for user {user_id}. Target Import: {target_import_count}. Max Scan: {max_scan_depth}. Filtering: {filter_project_prompts}")
         
-        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}. Filtering: {filter_project_prompts}")
-        
-        while synced_count < limit:
-            # 2. Fetch Generation Batch
-            current_limit = min(batch_size, limit - offset)
-            if current_limit <= 0:
-                break
+        while synced_count < target_import_count and scanned_count < max_scan_depth:
+            # Always fetch full batches to maximize scanning speed
+            current_batch_limit = batch_size
                 
-            resp = await client.get_user_generations(user_id, offset=offset, limit=current_limit)
+            resp = await client.get_user_generations(user_id, offset=offset, limit=current_batch_limit)
             generations = resp.get('generations', [])
             
             if not generations:
-                print("[SYNC] No more generations found.")
+                print("[SYNC] No more generations returned from API.")
                 break
             
+            batch_synced = 0
+            
             for gen in generations:
+                scanned_count += 1
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
@@ -844,15 +850,12 @@ async def sync_generations(
                 prompt = gen.get('prompt') or ""
                 
                 # --- FILTER LOGIC ---
-                # The Leonardo API does not return the "Source" (Web vs API).
-                # To distinguish App-generated images (which follow a strict numbering scheme) from random Web generations,
-                # we check if the prompt starts with a number (e.g., "123..." or "[123]...").
-                # This excludes random web experiments like "A wet blue cat..." or "Create an icon..."
                 if filter_project_prompts:
-                    # Regex: Start of string, optional whitespace, optional [, digits
-                    if not re.match(r'^\s*\[?\d+', prompt):
-                        # print(f"[SYNC] Skipping non-project prompt: {prompt[:30]}...")
-                        continue
+                    # Regex: Look for digits at start (123...) or inside brackets ([123]...)
+                    clean_prompt = prompt.strip()
+                    if not re.search(r'^\[?\d+', clean_prompt):
+                         skipped_count += 1
+                         continue
                 
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
@@ -892,17 +895,31 @@ async def sync_generations(
                         # Insert
                         await insert_generation(data)
                         synced_count += 1
+                        batch_synced += 1
+                        
+                        # Stop if we hit the target mid-batch
+                        if synced_count >= target_import_count:
+                            break
+                            
                     except Exception as img_e:
                         print(f"[SYNC ERROR] Failed to import image {img.get('id')}: {img_e}")
                         continue
+                
+                if synced_count >= target_import_count:
+                    break
             
             offset += len(generations)
-            print(f"[SYNC] Processed batch. Offset: {offset}, Total Synced: {synced_count}")
+            print(f"[SYNC] Batch done. Offset: {offset}, Total Scanned: {scanned_count}, Total Synced: {synced_count}, Skipped: {skipped_count}")
             
-            # Avoid rate limits
-            await asyncio.sleep(0.2)
+            # Reduce sleep slightly to speed up deep scanning
+            await asyncio.sleep(0.1)
                 
-        return {"success": True, "count": synced_count}
+        return {
+            "success": True, 
+            "count": synced_count, 
+            "scanned": scanned_count, 
+            "skipped": skipped_count
+        }
         
     except Exception as e:
         print(f"Sync error: {e}")

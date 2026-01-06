@@ -1621,7 +1621,7 @@ function GalleryView() {
                 filter_project_prompts: true
             });
             await fetchGallery();
-            alert(`Sync complete! Processed ${res.data.count} images.`);
+            alert(`Sync complete! \nSynced: ${res.data.count} images\nScanned: ${res.data.scanned} generations\nSkipped (non-matching): ${res.data.skipped}`);
         } catch (e) {
             console.error('Sync failed:', e);
             alert('Sync failed. Check console for details.');
