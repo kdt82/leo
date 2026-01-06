@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Image as ImageIcon, Layers, Zap, Lock, Grid, Wand2, FileSpreadsheet, LogOut, Loader2 } from 'lucide-react';
+import { Settings, Image as ImageIcon, Layers, Zap, Lock, Grid, Wand2, FileSpreadsheet, LogOut, Loader2, Receipt } from 'lucide-react';
 import { getApiKey, isEnvApiKey, apiClient, checkAuthStatus, logout } from './api/client';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
@@ -8,7 +8,7 @@ import clsx from 'clsx';
 function App() {
   const [apiKey, setApiKey] = useState(getApiKey());
   const [credits, setCredits] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'generate' | 'results' | 'gallery' | 'prompts' | 'classifier' | 'settings'>('generate');
+  const [activeTab, setActiveTab] = useState<'generate' | 'results' | 'gallery' | 'prompts' | 'classifier' | 'settings' | 'costs'>('generate');
   const fromEnv = isEnvApiKey();
 
   // Auth state
@@ -120,6 +120,7 @@ function App() {
       <main className="flex-1 overflow-hidden flex">
         <div className="w-16 border-r border-zinc-800 flex flex-col items-center py-4 gap-4 bg-surface/30">
           <NavIcon icon={ImageIcon} active={activeTab === 'generate'} onClick={() => setActiveTab('generate')} label="Generate" />
+          <NavIcon icon={Receipt} active={activeTab === 'costs'} onClick={() => setActiveTab('costs')} label="Billing" />
           <NavIcon icon={Wand2} active={activeTab === 'prompts'} onClick={() => setActiveTab('prompts')} label="Prompt Studio" />
           <NavIcon icon={FileSpreadsheet} active={activeTab === 'classifier'} onClick={() => setActiveTab('classifier')} label="Classifier" />
           <NavIcon icon={Layers} active={activeTab === 'results'} onClick={() => setActiveTab('results')} label="Results" />
@@ -129,11 +130,12 @@ function App() {
         <div className="flex-1 overflow-auto p-0 relative">
           {apiKey ? (
             activeTab === 'generate' ? <Dashboard apiKey={apiKey} mode="generate" onBatchComplete={fetchCredits} /> :
-              activeTab === 'prompts' ? <Dashboard apiKey={apiKey} mode="prompts" /> :
-                activeTab === 'classifier' ? <Dashboard apiKey={apiKey} mode="classifier" /> :
-                  activeTab === 'results' ? <Dashboard apiKey={apiKey} mode="results" /> :
-                    activeTab === 'gallery' ? <Dashboard apiKey={apiKey} mode="gallery" /> :
-                      <SettingsPage apiKey={apiKey} setApiKey={setApiKey} fromEnv={fromEnv} />
+              activeTab === 'costs' ? <Dashboard apiKey={apiKey} mode="costs" /> :
+                activeTab === 'prompts' ? <Dashboard apiKey={apiKey} mode="prompts" /> :
+                  activeTab === 'classifier' ? <Dashboard apiKey={apiKey} mode="classifier" /> :
+                    activeTab === 'results' ? <Dashboard apiKey={apiKey} mode="results" /> :
+                      activeTab === 'gallery' ? <Dashboard apiKey={apiKey} mode="gallery" /> :
+                        <SettingsPage apiKey={apiKey} setApiKey={setApiKey} fromEnv={fromEnv} />
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="max-w-md w-full p-8 bg-surface rounded-xl border border-zinc-800 shadow-2xl">

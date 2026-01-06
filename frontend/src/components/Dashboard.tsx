@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, Receipt } from 'lucide-react';
 import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey, API_URL } from '../api/client';
 import clsx from 'clsx';
 
 interface Props {
     apiKey: string;
-    mode: 'generate' | 'results' | 'gallery' | 'prompts' | 'classifier';
+    mode: 'generate' | 'results' | 'gallery' | 'prompts' | 'classifier' | 'costs';
     onBatchComplete?: () => void;
 }
 
@@ -41,6 +41,9 @@ export default function Dashboard({ apiKey, mode, onBatchComplete }: Props) {
     }
     if (mode === 'gallery') {
         return <GalleryView />;
+    }
+    if (mode === 'costs') {
+        return <CostView />;
     }
     return <ResultsView />;
 }
@@ -101,15 +104,6 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
     const [batchId, setBatchId] = useState<string | null>(null);
     const [jobStatus, setJobStatus] = useState<any>(null);
 
-    // Cost tracking state
-    const [costStats, setCostStats] = useState<{
-        total_images: number;
-        total_cost_usd: number;
-        batches: number;
-        since: string;
-        breakdown: Array<{ date: string; count: number }>;
-    } | null>(null);
-
     useEffect(() => {
         // Load models
         apiClient.get('/models', { params: { apiKey } })
@@ -120,12 +114,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
             .catch(console.error);
     }, [apiKey]);
 
-    // Fetch cost statistics
-    useEffect(() => {
-        apiClient.get('/cost-stats', { params: { since: '2026-12-15', cost_per_image: 0.08 } })
-            .then(res => setCostStats(res.data))
-            .catch(console.error);
-    }, []);
+
 
     useEffect(() => {
         if (!batchId) return;
@@ -1007,57 +996,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                         Start Batch
                     </button>
 
-                    {/* Cost Calculator Widget - Sidebar */}
-                    {costStats && (
-                        <div className="mt-8 border-t border-zinc-800 pt-6">
-                            <h3 className="text-zinc-400 text-sm font-medium mb-4 flex items-center gap-2">
-                                <span className="text-emerald-500">💰</span> Usage & Costs
-                                <span className="text-[10px] text-zinc-600 ml-auto bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Dec 15+</span>
-                            </h3>
 
-                            <div className="grid grid-cols-2 gap-3 mb-5">
-                                <div className="bg-zinc-900/50 rounded-lg p-3 text-center border border-zinc-800">
-                                    <div className="text-2xl font-bold text-white mb-0.5">{costStats.total_images.toLocaleString()}</div>
-                                    <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">Images</div>
-                                </div>
-                                <div className="bg-zinc-900/50 rounded-lg p-3 text-center border border-zinc-800">
-                                    <div className="text-2xl font-bold text-emerald-400 mb-0.5">${costStats.total_cost_usd.toFixed(2)}</div>
-                                    <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">Total Cost</div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <div className="flex justify-between items-end pb-2 border-b border-zinc-800/50">
-                                    <span className="text-xs font-medium text-zinc-400">Daily Breakdown</span>
-                                    <span className="text-[10px] text-zinc-600 font-mono">$0.08 / img</span>
-                                </div>
-                                <div className="space-y-1 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
-                                    {costStats.breakdown.length === 0 ? (
-                                        <div className="text-xs text-zinc-600 text-center py-4 italic">No activity recorded yet</div>
-                                    ) : (
-                                        costStats.breakdown.slice(0, 10).map((day, idx) => (
-                                            <div key={idx} className="group flex justify-between items-center text-xs p-2 rounded hover:bg-zinc-800/40 transition-colors border border-transparent hover:border-zinc-800">
-                                                <span className="text-zinc-400 font-medium">{day.date}</span>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">{day.count} img</span>
-                                                    <span className="font-mono text-emerald-500/80 group-hover:text-emerald-400 w-14 text-right font-medium">
-                                                        ${(day.count * 0.08).toFixed(2)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                                {costStats.breakdown.length > 10 && (
-                                    <div className="text-center pt-1">
-                                        <button className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors">
-                                            Show all history
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div >
 
@@ -2760,6 +2699,116 @@ function ClassifierView() {
                         <p>Upload a CSV and click "Classify Prompts" to begin</p>
                     </div>
                 )}
+            </div>
+        </div>
+    );
+}
+
+function CostView() {
+    const [costStats, setCostStats] = useState<{
+        total_images: number;
+        total_cost_usd: number;
+        batches: number;
+        since: string;
+        breakdown: Array<{ date: string; count: number }>;
+    } | null>(null);
+
+    useEffect(() => {
+        apiClient.get('/cost-stats', { params: { since: '2026-12-15', cost_per_image: 0.08 } })
+            .then(res => setCostStats(res.data))
+            .catch(console.error);
+    }, []);
+
+    if (!costStats) return (
+        <div className="flex h-full items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
+        </div>
+    );
+
+    return (
+        <div className="h-full overflow-y-auto bg-background p-8">
+            <div className="max-w-5xl mx-auto">
+                <header className="mb-8">
+                    <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                        <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-lg border border-emerald-500/30">
+                            <Receipt className="w-8 h-8 text-emerald-400" />
+                        </div>
+                        Billing & Usage Report
+                    </h1>
+                    <p className="text-zinc-400 mt-2 ml-14">
+                        Detailed historical breakdown of generation costs and usage since {costStats.since}.
+                    </p>
+                </header>
+
+                {/* Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Images Generated</div>
+                        <div className="text-3xl font-bold text-white">{costStats.total_images.toLocaleString()}</div>
+                    </div>
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Cost (USD)</div>
+                        <div className="text-3xl font-bold text-emerald-400">${costStats.total_cost_usd.toFixed(2)}</div>
+                        <div className="text-xs text-zinc-500 mt-1">@ $0.08 per image</div>
+                    </div>
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Batches</div>
+                        <div className="text-3xl font-bold text-indigo-400">{costStats.batches.toLocaleString()}</div>
+                    </div>
+                </div>
+
+                {/* Detailed Table */}
+                <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+                    <div className="px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+                        <h3 className="font-semibold text-zinc-200 flex items-center gap-2">
+                            <FileSpreadsheet className="w-4 h-4 text-zinc-500" />
+                            Daily Breakdown
+                        </h3>
+                        {/* Placeholder for export if needed */}
+                        {/* <button className="text-xs text-indigo-400 hover:text-indigo-300">Export CSV</button> */}
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                            <thead className="text-xs text-zinc-500 uppercase bg-zinc-950/50 border-b border-zinc-800">
+                                <tr>
+                                    <th className="px-6 py-3 font-medium">Date</th>
+                                    <th className="px-6 py-3 font-medium text-right">Images</th>
+                                    <th className="px-6 py-3 font-medium text-right">Cost (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-zinc-800/50">
+                                {costStats.breakdown.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="px-6 py-12 text-center text-zinc-500 italic">
+                                            No generation history found for this period.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    costStats.breakdown.map((item, i) => (
+                                        <tr key={i} className="hover:bg-zinc-800/30 transition-colors">
+                                            <td className="px-6 py-4 text-zinc-300 font-mono">{item.date}</td>
+                                            <td className="px-6 py-4 text-zinc-300 text-right font-mono">{item.count}</td>
+                                            <td className="px-6 py-4 text-emerald-400 text-right font-mono font-medium">
+                                                ${(item.count * 0.08).toFixed(2)}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                            {costStats.breakdown.length > 0 && (
+                                <tfoot className="bg-zinc-900/80 font-medium text-zinc-200 border-t border-zinc-800">
+                                    <tr>
+                                        <td className="px-6 py-4">Total</td>
+                                        <td className="px-6 py-4 text-right font-mono">{costStats.total_images.toLocaleString()}</td>
+                                        <td className="px-6 py-4 text-right font-mono text-emerald-400">
+                                            ${costStats.total_cost_usd.toFixed(2)}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            )}
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     );
