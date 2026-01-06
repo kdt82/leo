@@ -8,7 +8,7 @@ from app.core.config import settings
 from app.services.leonardo_client import LeonardoClient
 from app.services.queue_manager import queue_manager, JobStatus
 from app.services.storage import storage_service
-from app.services.db import get_history, get_gallery, update_tag, export_gallery, generate_export_csv, save_prompt_enhancement, get_enhancement_by_number
+from app.services.db import get_history, get_gallery, update_tag, export_gallery, generate_export_csv, save_prompt_enhancement, get_enhancement_by_number, insert_generation
 import uuid
 import shutil
 import os
