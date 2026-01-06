@@ -189,13 +189,25 @@ async def _insert_generation_postgres(data: dict):
     pool = await get_pool()
     async with pool.acquire() as conn:
         # Use provided created_at or default to now
+        from datetime import datetime
         created_at = data.get('created_at')
-        if isinstance(created_at, str):
-            try:
-                from datetime import datetime
-                created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
-            except:
+        
+        if created_at:
+            if isinstance(created_at, str):
+                try:
+                    # Try ISO format with Z suffix
+                    created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                except ValueError:
+                    try:
+                        # Try without timezone
+                        created_at = datetime.fromisoformat(created_at.split('.')[0])
+                    except ValueError:
+                        print(f"[DB] Failed to parse date: {created_at}")
+                        created_at = datetime.now()
+            elif not isinstance(created_at, datetime):
                 created_at = datetime.now()
+        else:
+            created_at = datetime.now()
         
         await conn.execute('''
             INSERT INTO generations (
