@@ -793,14 +793,12 @@ async def submit_batch(request: BatchRequest):
 @router.post("/generations/sync")
 async def sync_generations(
     apiKey: str = Body(..., embed=True), 
-    limit: int = Body(1000, embed=True),
-    filter_project_prompts: bool = Body(True, embed=True)
+    limit: int = Body(5000, embed=True)
 ):
     """
-    Fetch recent generations from Leonardo and save to local DB.
-    - limit: Max number of generations to fetch (default 1000)
-    - filter_project_prompts: If True, only imports generations that look like they came from this App (start with a number).
-      The Leonardo API does not currently allow filtering by Source/API Key, so this is necessary to distinguish specific App generations.
+    Fetch ALL generations from Leonardo and save to local DB.
+    The Gallery view will filter to show only project-related images (with prompt_number).
+    - limit: Max number of generations to fetch (default 5000)
     """
     try:
         from datetime import datetime
@@ -814,23 +812,18 @@ async def sync_generations(
             raise HTTPException(status_code=400, detail="Could not fetch user details")
         user_id = user_details[0]['user']['id']
         
-        # CRITICAL FIX: Separate import limit from scan limit
-        # limit: How many items we want to SAVE to our DB (e.g. 1000)
-        # scan_limit: How far back we check before giving up (safety brake, e.g. 5000)
         target_import_count = limit
-        max_scan_depth = 5000 
+        max_scan_depth = limit  # No filtering, so scan limit = import limit
         
         synced_count = 0
         last_error = None
         scanned_count = 0
-        skipped_count = 0
         offset = 0
         batch_size = 50 
         
-        print(f"[SYNC] Starting sync for user {user_id}. Target Import: {target_import_count}. Max Scan: {max_scan_depth}. Filtering: {filter_project_prompts}")
+        print(f"[SYNC] Starting FULL sync for user {user_id}. Target: {target_import_count}")
         
         while synced_count < target_import_count and scanned_count < max_scan_depth:
-            # Always fetch full batches to maximize scanning speed
             current_batch_limit = batch_size
                 
             resp = await client.get_user_generations(user_id, offset=offset, limit=current_batch_limit)
@@ -847,15 +840,8 @@ async def sync_generations(
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
-                # Basic data extraction
+                # Basic data extraction - NO FILTERING, import everything
                 prompt = gen.get('prompt') or ""
-                
-                # --- FILTER LOGIC ---
-                if filter_project_prompts:
-                    clean_prompt = prompt.strip()
-                    if not re.search(r'^\[?\d+', clean_prompt):
-                         skipped_count += 1
-                         continue
                 
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
@@ -910,16 +896,14 @@ async def sync_generations(
                     break
             
             offset += len(generations)
-            print(f"[SYNC] Batch done. Offset: {offset}, Total Scanned: {scanned_count}, Total Synced: {synced_count}, Skipped: {skipped_count}")
+            print(f"[SYNC] Batch done. Offset: {offset}, Total Synced: {synced_count}")
             
-            # Reduce sleep slightly to speed up deep scanning
             await asyncio.sleep(0.1)
                 
         return {
             "success": True, 
             "count": synced_count, 
             "scanned": scanned_count, 
-            "skipped": skipped_count,
             "last_error": last_error
         }
         
