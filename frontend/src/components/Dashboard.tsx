@@ -1620,9 +1620,9 @@ function GalleryView() {
                 limit: 5000
             });
             await fetchGallery();
-            let msg = `Sync complete! Imported ${res.data.count} images.`;
+            let msg = `Sync complete!\n\nImported: ${res.data.count} images\nScanned: ${res.data.scanned} generations\nSkipped (not from this app): ${res.data.skipped}\nExisting batches in DB: ${res.data.existing_batches}`;
             if (res.data.last_error) {
-                msg += `\n\nNote: Some images had errors: ${res.data.last_error}`;
+                msg += `\n\nNote: ${res.data.last_error}`;
             }
             alert(msg);
         } catch (e) {

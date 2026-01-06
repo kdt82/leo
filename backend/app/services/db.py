@@ -154,6 +154,26 @@ def _init_sqlite():
 
 
 # ============================================================
+# BATCH ID HELPERS
+# ============================================================
+
+async def get_existing_batch_ids() -> set:
+    """Get all unique batch_ids that exist in our database (created by this app)."""
+    if settings.USE_POSTGRES:
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            rows = await conn.fetch('SELECT DISTINCT batch_id FROM generations WHERE batch_id IS NOT NULL')
+            return {row['batch_id'] for row in rows}
+    else:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('SELECT DISTINCT batch_id FROM generations WHERE batch_id IS NOT NULL')
+        result = {row[0] for row in c.fetchall()}
+        conn.close()
+        return result
+
+
+# ============================================================
 # INSERT OPERATIONS  
 # ============================================================
 
@@ -383,8 +403,8 @@ async def _get_gallery_postgres(
     pool = await get_pool()
     async with pool.acquire() as conn:
         # Build query with filters
-        # IMPORTANT: Only show project items (with prompt_number) - excludes web UI generations
-        query = 'SELECT * FROM generations WHERE prompt_number IS NOT NULL'
+        # Show all items in the database (they were either created by this app or synced and matched)
+        query = 'SELECT * FROM generations WHERE 1=1'
         params = []
         param_idx = 1
         
@@ -418,8 +438,8 @@ async def _get_gallery_postgres(
         
         rows = await conn.fetch(query, *params)
         
-        # Get total count (only project items)
-        count_query = 'SELECT COUNT(*) FROM generations WHERE prompt_number IS NOT NULL'
+        # Get total count
+        count_query = 'SELECT COUNT(*) FROM generations WHERE 1=1'
         count_params = []
         param_idx = 1
         if tag_filter:
@@ -439,12 +459,12 @@ async def _get_gallery_postgres(
         
         total = await conn.fetchval(count_query, *count_params)
         
-        # Get unique batches (only from project items)
-        batches_rows = await conn.fetch('SELECT DISTINCT batch_id FROM generations WHERE prompt_number IS NOT NULL ORDER BY batch_id DESC')
+        # Get unique batches
+        batches_rows = await conn.fetch('SELECT DISTINCT batch_id FROM generations ORDER BY batch_id DESC')
         batches = [row['batch_id'] for row in batches_rows if row['batch_id']]
         
-        # Get tag counts (only from project items)
-        tag_rows = await conn.fetch('SELECT tag, COUNT(*) as count FROM generations WHERE prompt_number IS NOT NULL GROUP BY tag')
+        # Get tag counts
+        tag_rows = await conn.fetch('SELECT tag, COUNT(*) as count FROM generations GROUP BY tag')
         tag_counts = {row['tag'] or 'untagged': row['count'] for row in tag_rows}
         
         return {
@@ -465,8 +485,8 @@ def _get_gallery_sqlite(
     c = conn.cursor()
     
     # Build query with filters
-    # IMPORTANT: Only show project items (with prompt_number) - excludes web UI generations
-    query = 'SELECT * FROM generations WHERE prompt_number IS NOT NULL'
+    # Show all items in the database
+    query = 'SELECT * FROM generations WHERE 1=1'
     params = []
     
     if tag_filter:
@@ -497,8 +517,8 @@ def _get_gallery_sqlite(
     c.execute(query, params)
     rows = c.fetchall()
     
-    # Get total count (only project items)
-    count_query = 'SELECT COUNT(*) FROM generations WHERE prompt_number IS NOT NULL'
+    # Get total count
+    count_query = 'SELECT COUNT(*) FROM generations WHERE 1=1'
     count_params = []
     if tag_filter:
         if tag_filter == 'untagged':
@@ -516,12 +536,12 @@ def _get_gallery_sqlite(
     c.execute(count_query, count_params)
     total = c.fetchone()[0]
     
-    # Get unique batches (only from project items)
-    c.execute('SELECT DISTINCT batch_id FROM generations WHERE prompt_number IS NOT NULL ORDER BY created_at DESC')
+    # Get unique batches
+    c.execute('SELECT DISTINCT batch_id FROM generations ORDER BY created_at DESC')
     batches = [row[0] for row in c.fetchall() if row[0]]
     
-    # Get tag counts (only from project items)
-    c.execute('SELECT tag, COUNT(*) as count FROM generations WHERE prompt_number IS NOT NULL GROUP BY tag')
+    # Get tag counts
+    c.execute('SELECT tag, COUNT(*) as count FROM generations GROUP BY tag')
     tag_counts = {row[0] or 'untagged': row[1] for row in c.fetchall()}
     
     conn.close()

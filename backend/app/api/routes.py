@@ -812,16 +812,22 @@ async def sync_generations(
             raise HTTPException(status_code=400, detail="Could not fetch user details")
         user_id = user_details[0]['user']['id']
         
+        # 2. Get existing batch_ids from our database (created by this app)
+        from app.services.db import get_existing_batch_ids
+        existing_batch_ids = await get_existing_batch_ids()
+        print(f"[SYNC] Found {len(existing_batch_ids)} existing batch_ids in database")
+        
         target_import_count = limit
-        max_scan_depth = limit  # No filtering, so scan limit = import limit
+        max_scan_depth = limit
         
         synced_count = 0
+        skipped_count = 0
         last_error = None
         scanned_count = 0
         offset = 0
         batch_size = 50 
         
-        print(f"[SYNC] Starting FULL sync for user {user_id}. Target: {target_import_count}")
+        print(f"[SYNC] Starting sync for user {user_id}. Target: {target_import_count}. Will match against {len(existing_batch_ids)} known batches.")
         
         while synced_count < target_import_count and scanned_count < max_scan_depth:
             current_batch_limit = batch_size
@@ -840,15 +846,20 @@ async def sync_generations(
                 if gen.get('status') != 'COMPLETE': 
                     continue
                 
-                # Basic data extraction - NO FILTERING, import everything
-                prompt = gen.get('prompt') or ""
+                gen_id = gen.get('id')
                 
+                # Only import if this batch_id exists in our database (created by this app)
+                if gen_id not in existing_batch_ids:
+                    skipped_count += 1
+                    continue
+                
+                # This batch was created by this app - import it!
+                prompt = gen.get('prompt') or ""
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
                 model_id = gen.get('modelId')
                 gen_seed = gen.get('seed')
                 created_str = gen.get('createdAt')
-                gen_id = gen.get('id')
                 
                 for img in gen.get('generated_images', []):
                     try:
@@ -896,7 +907,7 @@ async def sync_generations(
                     break
             
             offset += len(generations)
-            print(f"[SYNC] Batch done. Offset: {offset}, Total Synced: {synced_count}")
+            print(f"[SYNC] Batch done. Offset: {offset}, Synced: {synced_count}, Skipped: {skipped_count}")
             
             await asyncio.sleep(0.1)
                 
@@ -904,6 +915,8 @@ async def sync_generations(
             "success": True, 
             "count": synced_count, 
             "scanned": scanned_count, 
+            "skipped": skipped_count,
+            "existing_batches": len(existing_batch_ids),
             "last_error": last_error
         }
         
