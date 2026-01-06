@@ -791,8 +791,16 @@ async def submit_batch(request: BatchRequest):
     return {"batchId": batch_id, "jobIds": job_ids, "message": f"Queued {len(job_ids)} jobs"}
 
 @router.post("/generations/sync")
-async def sync_generations(apiKey: str = Body(..., embed=True), limit: int = Body(50, embed=True)):
-    """Fetch recent generations from Leonardo and save to local DB"""
+async def sync_generations(
+    apiKey: str = Body(..., embed=True), 
+    limit: int = Body(1000, embed=True),
+    filter_project_prompts: bool = Body(True, embed=True)
+):
+    """
+    Fetch recent generations from Leonardo and save to local DB.
+    - limit: Max number of generations to fetch (default 1000)
+    - filter_project_prompts: If True, only imports prompts starting with a number (e.g. "001..." or "[001]...")
+    """
     try:
         client = LeonardoClient(api_key=apiKey)
         
@@ -803,51 +811,87 @@ async def sync_generations(apiKey: str = Body(..., embed=True), limit: int = Bod
             raise HTTPException(status_code=400, detail="Could not fetch user details")
         user_id = user_details[0]['user']['id']
         
-        # 2. Fetch Generations
-        resp = await client.get_user_generations(user_id, limit=limit)
-        generations = resp.get('generations', [])
-        
         synced_count = 0
-        from app.services.db import insert_generation
+        offset = 0
+        batch_size = 50 # Leonardo API limit per request
         
-        for gen in generations:
-            if gen.get('status') != 'COMPLETE': 
-                continue
-            
-            prompt = gen.get('prompt')
-            width = gen.get('imageWidth')
-            height = gen.get('imageHeight')
-            model_id = gen.get('modelId')
-            gen_seed = gen.get('seed')
-            created = gen.get('createdAt')
-            gen_id = gen.get('id')
-            
-            for img in gen.get('generated_images', []):
-                # We use the Image ID as the Primary Key to support multiple images per generation
-                # We use the Generation ID as the Batch ID to group them
-                data = {
-                    "generationId": img['id'], 
-                    "batch_id": gen_id,
-                    "prompt": prompt,
-                    "prompt_number": None,
-                    "modelId": model_id,
-                    "status": "COMPLETE",
-                    "image_url": img['url'],
-                    "local_path": "", 
-                    "width": width,
-                    "height": height,
-                    "seed": img.get('seed') or gen_seed,
-                    "tag": None,
-                    "guidance_scale": gen.get('guidanceScale'),
-                    "num_steps": gen.get('inferenceSteps'),
-                    "preset_style": gen.get('presetStyle'),
-                    "imp": None,
-                    "created_at": created
-                }
+        from app.services.db import insert_generation
+        import re
+        
+        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}")
+        
+        while synced_count < limit:
+            # 2. Fetch Generation Batch
+            current_limit = min(batch_size, limit - offset)
+            if current_limit <= 0:
+                break
                 
-                # Insert safely (duplicates ignored due to DB change)
-                await insert_generation(data)
-                synced_count += 1
+            resp = await client.get_user_generations(user_id, offset=offset, limit=current_limit)
+            generations = resp.get('generations', [])
+            
+            if not generations:
+                print("[SYNC] No more generations found.")
+                break
+            
+            batch_processed = 0
+            
+            for gen in generations:
+                if gen.get('status') != 'COMPLETE': 
+                    continue
+                
+                prompt = gen.get('prompt') or ""
+                
+                # Filter Logic: Only import valid project prompts if requested
+                if filter_project_prompts:
+                    # Check for "123..." or "[123]..." pattern
+                    if not re.match(r'^\[?\d+', prompt.strip()):
+                        continue
+
+                width = gen.get('imageWidth')
+                height = gen.get('imageHeight')
+                model_id = gen.get('modelId')
+                gen_seed = gen.get('seed')
+                created = gen.get('createdAt')
+                gen_id = gen.get('id')
+                
+                for img in gen.get('generated_images', []):
+                    # We use the Image ID as the Primary Key to support multiple images per generation
+                    # We use the Generation ID as the Batch ID to group them
+                    data = {
+                        "generationId": img['id'], 
+                        "batch_id": gen_id,
+                        "prompt": prompt,
+                        "prompt_number": None, # Will be parsed later or untagged
+                        "modelId": model_id,
+                        "status": "COMPLETE",
+                        "image_url": img['url'],
+                        "local_path": "", # Remote image, no local path yet
+                        "width": width,
+                        "height": height,
+                        "seed": img.get('seed') or gen_seed,
+                        "tag": None,
+                        "guidance_scale": gen.get('guidanceScale'),
+                        "num_steps": gen.get('inferenceSteps'),
+                        "preset_style": gen.get('presetStyle'),
+                        "imp": None,
+                        "created_at": created
+                    }
+                    
+                    # Try to parse number from prompt for metadata
+                    number_match = re.match(r'^\[?(\d+)\]?', prompt.strip())
+                    if number_match:
+                        data['prompt_number'] = int(number_match.group(1))
+                    
+                    # Insert safely (duplicates ignored)
+                    await insert_generation(data)
+                    synced_count += 1
+                    batch_processed += 1
+            
+            offset += len(generations)
+            print(f"[SYNC] Processed batch. Offset: {offset}, Total Synced: {synced_count}")
+            
+            # Avoid rate limits
+            await asyncio.sleep(0.2)
                 
         return {"success": True, "count": synced_count}
         
