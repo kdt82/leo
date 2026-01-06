@@ -1614,8 +1614,12 @@ function GalleryView() {
         setLoading(true);
         try {
             const apiKey = getApiKey();
-            // Sync up to 1000 items
-            const res = await apiClient.post('/generations/sync', { apiKey, limit: 1000 });
+            // Sync up to 1000 items, and Filter for Project Prompts (starts with number)
+            const res = await apiClient.post('/generations/sync', {
+                apiKey,
+                limit: 1000,
+                filter_project_prompts: true
+            });
             await fetchGallery();
             alert(`Sync complete! Processed ${res.data.count} images.`);
         } catch (e) {

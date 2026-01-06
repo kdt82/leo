@@ -793,11 +793,14 @@ async def submit_batch(request: BatchRequest):
 @router.post("/generations/sync")
 async def sync_generations(
     apiKey: str = Body(..., embed=True), 
-    limit: int = Body(1000, embed=True)
+    limit: int = Body(1000, embed=True),
+    filter_project_prompts: bool = Body(True, embed=True)
 ):
     """
     Fetch recent generations from Leonardo and save to local DB.
     - limit: Max number of generations to fetch (default 1000)
+    - filter_project_prompts: If True, only imports generations that look like they came from this App (start with a number).
+      The Leonardo API does not currently allow filtering by Source/API Key, so this is necessary to distinguish specific App generations.
     """
     try:
         from datetime import datetime
@@ -818,7 +821,7 @@ async def sync_generations(
         from app.services.db import insert_generation
         import re
         
-        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}")
+        print(f"[SYNC] Starting sync for user {user_id}. Target limit: {limit}. Filtering: {filter_project_prompts}")
         
         while synced_count < limit:
             # 2. Fetch Generation Batch
@@ -839,11 +842,23 @@ async def sync_generations(
                 
                 # Basic data extraction
                 prompt = gen.get('prompt') or ""
+                
+                # --- FILTER LOGIC ---
+                # The Leonardo API does not return the "Source" (Web vs API).
+                # To distinguish App-generated images (which follow a strict numbering scheme) from random Web generations,
+                # we check if the prompt starts with a number (e.g., "123..." or "[123]...").
+                # This excludes random web experiments like "A wet blue cat..." or "Create an icon..."
+                if filter_project_prompts:
+                    # Regex: Start of string, optional whitespace, optional [, digits
+                    if not re.match(r'^\s*\[?\d+', prompt):
+                        # print(f"[SYNC] Skipping non-project prompt: {prompt[:30]}...")
+                        continue
+                
                 width = gen.get('imageWidth')
                 height = gen.get('imageHeight')
                 model_id = gen.get('modelId')
                 gen_seed = gen.get('seed')
-                created_str = gen.get('createdAt') # Pass string directly, DB handles it
+                created_str = gen.get('createdAt')
                 gen_id = gen.get('id')
                 
                 for img in gen.get('generated_images', []):
