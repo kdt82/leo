@@ -821,6 +821,7 @@ async def sync_generations(
         max_scan_depth = 5000 
         
         synced_count = 0
+        last_error = None
         scanned_count = 0
         skipped_count = 0
         offset = 0
@@ -851,7 +852,6 @@ async def sync_generations(
                 
                 # --- FILTER LOGIC ---
                 if filter_project_prompts:
-                    # Regex: Look for digits at start (123...) or inside brackets ([123]...)
                     clean_prompt = prompt.strip()
                     if not re.search(r'^\[?\d+', clean_prompt):
                          skipped_count += 1
@@ -903,6 +903,7 @@ async def sync_generations(
                             
                     except Exception as img_e:
                         print(f"[SYNC ERROR] Failed to import image {img.get('id')}: {img_e}")
+                        last_error = str(img_e)
                         continue
                 
                 if synced_count >= target_import_count:
@@ -918,7 +919,8 @@ async def sync_generations(
             "success": True, 
             "count": synced_count, 
             "scanned": scanned_count, 
-            "skipped": skipped_count
+            "skipped": skipped_count,
+            "last_error": last_error
         }
         
     except Exception as e:
