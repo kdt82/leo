@@ -165,17 +165,64 @@ async def insert_generation(data: dict):
         _insert_generation_sqlite(data)
 
 
-async def _insert_generation_postgres(data: dict):
-    pool = await get_pool()
-    async with pool.acquire() as conn:
-        await conn.execute('''
-            INSERT INTO generations (
+    async def _insert_generation_postgres(data: dict):
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            # Use provided created_at or default to now
+            created_at = data.get('created_at')
+            if isinstance(created_at, str):
+                try:
+                    from datetime import datetime
+                    created_at = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                except:
+                    created_at = datetime.now()
+            
+            await conn.execute('''
+                INSERT INTO generations (
+                    id, batch_id, prompt, prompt_number, model_id, status, image_url, local_path, 
+                    width, height, seed, tag, guidance_scale, num_steps, preset_style, 
+                    original_prompt, enhanced_prompt, imp, created_at
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+                ON CONFLICT (id) DO NOTHING
+            ''',
+                data.get('generationId'),
+                data.get('batch_id'),
+                data.get('prompt'),
+                data.get('prompt_number'),
+                data.get('modelId'),
+                data.get('status'),
+                data.get('image_url'),
+                data.get('local_path'),
+                data.get('width'),
+                data.get('height'),
+                data.get('seed'),
+                data.get('tag'),
+                data.get('guidance_scale'),
+                data.get('num_steps'),
+                data.get('preset_style'),
+                data.get('original_prompt'),
+                data.get('enhanced_prompt'),
+                data.get('imp'),
+                created_at or datetime.now()
+            )
+
+
+    def _insert_generation_sqlite(data: dict):
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Use provided created_at or default to now
+        created_at = data.get('created_at')
+        if not created_at:
+             created_at = datetime.now().isoformat()
+             
+        c.execute('''
+            INSERT OR IGNORE INTO generations (
                 id, batch_id, prompt, prompt_number, model_id, status, image_url, local_path, 
                 width, height, seed, tag, guidance_scale, num_steps, preset_style, 
                 original_prompt, enhanced_prompt, imp, created_at
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
-            ON CONFLICT (id) DO NOTHING
-        ''',
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
             data.get('generationId'),
             data.get('batch_id'),
             data.get('prompt'),
@@ -194,42 +241,10 @@ async def _insert_generation_postgres(data: dict):
             data.get('original_prompt'),
             data.get('enhanced_prompt'),
             data.get('imp'),
-            datetime.now()
-        )
-
-
-def _insert_generation_sqlite(data: dict):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''
-        INSERT OR IGNORE INTO generations (
-            id, batch_id, prompt, prompt_number, model_id, status, image_url, local_path, 
-            width, height, seed, tag, guidance_scale, num_steps, preset_style, 
-            original_prompt, enhanced_prompt, imp, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        data.get('generationId'),
-        data.get('batch_id'),
-        data.get('prompt'),
-        data.get('prompt_number'),
-        data.get('modelId'),
-        data.get('status'),
-        data.get('image_url'),
-        data.get('local_path'),
-        data.get('width'),
-        data.get('height'),
-        data.get('seed'),
-        data.get('tag'),
-        data.get('guidance_scale'),
-        data.get('num_steps'),
-        data.get('preset_style'),
-        data.get('original_prompt'),
-        data.get('enhanced_prompt'),
-        data.get('imp'),
-        datetime.now().isoformat()
-    ))
-    conn.commit()
-    conn.close()
+            created_at
+        ))
+        conn.commit()
+        conn.close()
 
 
 # ============================================================

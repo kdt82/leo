@@ -866,35 +866,41 @@ async def sync_generations(
                 gen_id = gen.get('id')
                 
                 for img in gen.get('generated_images', []):
-                    # Data mapping
-                    data = {
-                        "generationId": img['id'], 
-                        "batch_id": gen_id,
-                        "prompt": prompt,
-                        "prompt_number": None,
-                        "modelId": model_id,
-                        "status": "COMPLETE",
-                        "image_url": img['url'],
-                        "local_path": "", 
-                        "width": width,
-                        "height": height,
-                        "seed": img.get('seed') or gen_seed,
-                        "tag": None,
-                        "guidance_scale": gen.get('guidanceScale'),
-                        "num_steps": gen.get('inferenceSteps'),
-                        "preset_style": gen.get('presetStyle'),
-                        "imp": None,
-                        "created_at": created_str
-                    }
-                    
-                    # Try to parse number from prompt for metadata (optional, doesn't filter)
-                    number_match = re.match(r'^\[?(\d+)\]?', prompt.strip())
-                    if number_match:
-                        data['prompt_number'] = int(number_match.group(1))
-                    
-                    # Insert
-                    await insert_generation(data)
-                    synced_count += 1
+                    try:
+                        # Data mapping
+                        data = {
+                            "generationId": img['id'], 
+                            "batch_id": gen_id,
+                            "prompt": prompt,
+                            "prompt_number": None,
+                            "modelId": model_id,
+                            "status": "COMPLETE",
+                            "image_url": img['url'],
+                            "local_path": "", 
+                            "width": width,
+                            "height": height,
+                            "seed": img.get('seed') or gen_seed,
+                            "tag": None,
+                            "guidance_scale": gen.get('guidanceScale'),
+                            "num_steps": gen.get('inferenceSteps'),
+                            "preset_style": gen.get('presetStyle'),
+                            "imp": None,
+                            "created_at": created_str
+                        }
+                        
+                        # Try to parse number from prompt for metadata (optional, doesn't filter)
+                        number_match = re.match(r'^\[?(\d+)\]?', prompt.strip())
+                        if number_match:
+                            data['prompt_number'] = int(number_match.group(1))
+                        
+                        # Insert
+                        await insert_generation(data)
+                        synced_count += 1
+                    except Exception as img_e:
+                        print(f"[SYNC ERROR] Failed to import image {img.get('id')}: {img_e}")
+                        import traceback
+                        traceback.print_exc()
+                        continue
             
             offset += len(generations)
             print(f"[SYNC] Processed batch. Offset: {offset}, Total Synced: {synced_count}")
