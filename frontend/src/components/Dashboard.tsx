@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight } from 'lucide-react';
-import { apiClient, getOpenAIKey, getOpenAIModel } from '../api/client';
+import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey } from '../api/client';
 import clsx from 'clsx';
 
 interface Props {
@@ -1609,6 +1609,20 @@ function GalleryView() {
         }
     };
 
+    const handleSync = async () => {
+        if (!confirm("This will fetch recent generations from Leonardo.ai and add them to your local library. Continue?")) return;
+        setLoading(true);
+        try {
+            const apiKey = getApiKey();
+            await apiClient.post('/generations/sync', { apiKey, limit: 50 });
+            await fetchGallery();
+        } catch (e) {
+            console.error('Sync failed:', e);
+            alert('Sync failed. Check console for details.');
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchGallery();
     }, [sortBy, sortOrder, tagFilter, batchFilter, impFilter, page]);
@@ -1652,6 +1666,14 @@ function GalleryView() {
 
                 {/* Export Buttons */}
                 <div className="flex gap-2">
+                    <button
+                        onClick={handleSync}
+                        disabled={loading}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                    >
+                        <RefreshCw className={clsx("w-4 h-4", loading && "animate-spin")} />
+                        Sync
+                    </button>
                     <button
                         onClick={() => handleExport('csv')}
                         className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"

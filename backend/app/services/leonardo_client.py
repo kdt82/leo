@@ -36,6 +36,9 @@ class LeonardoClient:
     async def list_platform_models(self):
         return await self._request("GET", "/platformModels")
 
+    async def get_user_generations(self, user_id: str, offset: int = 0, limit: int = 20):
+        return await self._request("GET", f"/generations/user/{user_id}", params={"offset": offset, "limit": limit})
+
     async def create_generation(self, prompt: str, model_id: str, **kwargs):
         """
         kwargs can include: negative_prompt, num_images, width, height, guidance_scale, 

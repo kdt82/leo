@@ -790,6 +790,71 @@ async def submit_batch(request: BatchRequest):
         
     return {"batchId": batch_id, "jobIds": job_ids, "message": f"Queued {len(job_ids)} jobs"}
 
+@router.post("/generations/sync")
+async def sync_generations(apiKey: str = Body(..., embed=True), limit: int = Body(50, embed=True)):
+    """Fetch recent generations from Leonardo and save to local DB"""
+    try:
+        client = LeonardoClient(api_key=apiKey)
+        
+        # 1. Get User ID
+        user_info = await client.get_user_info()
+        user_details = user_info.get('user_details', [])
+        if not user_details:
+            raise HTTPException(status_code=400, detail="Could not fetch user details")
+        user_id = user_details[0]['user']['id']
+        
+        # 2. Fetch Generations
+        resp = await client.get_user_generations(user_id, limit=limit)
+        generations = resp.get('generations', [])
+        
+        synced_count = 0
+        from app.services.db import insert_generation
+        
+        for gen in generations:
+            if gen.get('status') != 'COMPLETE': 
+                continue
+            
+            prompt = gen.get('prompt')
+            width = gen.get('imageWidth')
+            height = gen.get('imageHeight')
+            model_id = gen.get('modelId')
+            gen_seed = gen.get('seed')
+            created = gen.get('createdAt')
+            gen_id = gen.get('id')
+            
+            for img in gen.get('generated_images', []):
+                # We use the Image ID as the Primary Key to support multiple images per generation
+                # We use the Generation ID as the Batch ID to group them
+                data = {
+                    "generationId": img['id'], 
+                    "batch_id": gen_id,
+                    "prompt": prompt,
+                    "prompt_number": None,
+                    "modelId": model_id,
+                    "status": "COMPLETE",
+                    "image_url": img['url'],
+                    "local_path": "", 
+                    "width": width,
+                    "height": height,
+                    "seed": img.get('seed') or gen_seed,
+                    "tag": None,
+                    "guidance_scale": gen.get('guidanceScale'),
+                    "num_steps": gen.get('inferenceSteps'),
+                    "preset_style": gen.get('presetStyle'),
+                    "imp": None,
+                    "created_at": created
+                }
+                
+                # Insert safely (duplicates ignored due to DB change)
+                await insert_generation(data)
+                synced_count += 1
+                
+        return {"success": True, "count": synced_count}
+        
+    except Exception as e:
+        print(f"Sync error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/jobs/{batch_id}")
 async def get_batch_status(batch_id: str):
     all_jobs = queue_manager.list_jobs()

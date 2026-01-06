@@ -174,6 +174,7 @@ async def _insert_generation_postgres(data: dict):
                 width, height, seed, tag, guidance_scale, num_steps, preset_style, 
                 original_prompt, enhanced_prompt, imp, created_at
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+            ON CONFLICT (id) DO NOTHING
         ''',
             data.get('generationId'),
             data.get('batch_id'),
@@ -201,7 +202,7 @@ def _insert_generation_sqlite(data: dict):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''
-        INSERT INTO generations (
+        INSERT OR IGNORE INTO generations (
             id, batch_id, prompt, prompt_number, model_id, status, image_url, local_path, 
             width, height, seed, tag, guidance_scale, num_steps, preset_style, 
             original_prompt, enhanced_prompt, imp, created_at
