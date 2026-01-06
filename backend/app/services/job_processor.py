@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import re
+import os
 from app.services.leonardo_client import LeonardoClient
 from app.services.storage import storage_service
 from app.services.queue_manager import Job
@@ -272,11 +274,89 @@ async def process_generation_job(job: Job) -> Dict[str, Any]:
     print(f"[DEBUG] Seed from final_data (generation level): {final_data.get('seed')}")
     print(f"[DEBUG] Seed from prompt_data (user request): {prompt_data.get('seed')}")
     
+    # Attempt to parse prompt for {number} {description} {Group}
+    # Regex assumes: "123 Description text {Group}"
+    # We look for leading digits, then content, then {Group} at end
+    prompt_text = prompt_data["prompt"]
+    parsed_info = None
+    
+    # Try pattern: Number Description {Group}
+    # e.g., "001 A red apple {Fruit}"
+    match = re.search(r"^\s*(\d+)\s+(.+?)\s+\{(.+?)\}\s*$", prompt_text, re.DOTALL)
+    if match:
+        p_number = match.group(1)
+        p_desc = match.group(2)
+        p_group = match.group(3)
+        parsed_info = {
+            "Number": p_number,
+            "Description": p_desc,
+            "Group": p_group
+        }
+        print(f"[DEBUG] Parsed Prompt: Number={p_number}, Desc={p_desc}, Group={p_group}")
+
+    # Parse specific attributes for advanced filename generation
+    # Expected format tags in prompt: imp=slug cape=slug chest=slug aura=slug set=slug pose=slug
+    attr_map = {
+        "imp": "na",
+        "cape": "na",
+        "chest": "na",
+        "aura": "na",
+        "set": "na",
+        "pose": "na"
+    }
+    
+    # Extract attributes regardless of main format
+    for key in attr_map.keys():
+        # Look for key=value
+        # match until next whitespace
+        attr_match = re.search(rf"\b{key}=([^\s]+)", prompt_text, re.IGNORECASE)
+        if attr_match:
+            attr_map[key] = attr_match.group(1)
+
+    # Check if we should use the new format (requires at least a prompt number)
+    use_new_format = False
+    if parsed_info:
+        use_new_format = True
+
     for idx, img_obj in enumerate(generated_images):
         url = img_obj['url']
-        local_path = await storage_service.save_image(url, batch_id, prompt_index, idx + 1)
+        
+        custom_name = None
+        if use_new_format:
+            # Construct filename: {number}__imp={imp}__cape={cape}__chest={chest}__aura={aura}__set={set}__pose={pose}
+            p_number = parsed_info["Number"]
+            base_name = (
+                f"{p_number}__imp={attr_map['imp']}__cape={attr_map['cape']}__chest={attr_map['chest']}"
+                f"__aura={attr_map['aura']}__set={attr_map['set']}__pose={attr_map['pose']}"
+            )
+            
+            if len(generated_images) > 1:
+                custom_name = f"{base_name}_{idx+1}"
+            else:
+                custom_name = base_name
+        elif parsed_info:
+            # Fallback to old format: Number_Description_Group
+            safe_desc = parsed_info["Description"][:50].strip()
+            base_name = f"{parsed_info['Number']}_{safe_desc}_{parsed_info['Group']}"
+            
+            if len(generated_images) > 1:
+                custom_name = f"{base_name}_{idx+1}"
+            else:
+                custom_name = base_name
+                
+        local_path = await storage_service.save_image(url, batch_id, prompt_index, idx + 1, custom_filename=custom_name)
         saved_images.append(local_path)
         
+        # Save to Key File if we have parsed info
+        if parsed_info:
+             key_data = {
+                 "Number": parsed_info["Number"],
+                 "Description": parsed_info["Description"],
+                 "Group": parsed_info["Group"],
+                 "Filename": os.path.basename(local_path)
+             }
+             await storage_service.append_to_key_file(batch_id, key_data)
+
         # 4. Save to DB and CSV
         data_packet = {
             "prompt": prompt_data["prompt"],
@@ -297,12 +377,18 @@ async def process_generation_job(job: Job) -> Dict[str, Any]:
             # Additional metadata for gallery/export
             "guidance_scale": prompt_data.get("guidance_scale"),
             "num_steps": prompt_data.get("num_inference_steps"),
+            "guidance_scale": prompt_data.get("guidance_scale"),
+            "num_steps": prompt_data.get("num_inference_steps"),
             "preset_style": prompt_data.get("presetStyle"),
-            "tag": None  # Will be set later via UI
+            "imp": attr_map.get("imp") if attr_map.get("imp") != "na" else None,
+            "tag": None,  # Will be set later via UI
+            "parsed_number": parsed_info["Number"] if parsed_info else None,
+            "parsed_description": parsed_info["Description"] if parsed_info else None,
+            "parsed_group": parsed_info["Group"] if parsed_info else None
         }
         await storage_service.append_to_csv(batch_id, data_packet)
         try:
-             insert_generation(data_packet)
+             await insert_generation(data_packet)
         except Exception as e:
              logger.error(f"Failed to insert into DB: {e}")
 

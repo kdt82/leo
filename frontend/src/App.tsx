@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Settings, Image as ImageIcon, Layers, Zap, Lock, Grid, Wand2, FileSpreadsheet } from 'lucide-react';
-import { getApiKey, isEnvApiKey, apiClient } from './api/client';
+import { Settings, Image as ImageIcon, Layers, Zap, Lock, Grid, Wand2, FileSpreadsheet, LogOut, Loader2 } from 'lucide-react';
+import { getApiKey, isEnvApiKey, apiClient, checkAuthStatus, logout } from './api/client';
 import Dashboard from './components/Dashboard';
+import Login from './components/Login';
 import clsx from 'clsx';
 
 function App() {
@@ -10,11 +11,26 @@ function App() {
   const [activeTab, setActiveTab] = useState<'generate' | 'results' | 'gallery' | 'prompts' | 'classifier' | 'settings'>('generate');
   const fromEnv = isEnvApiKey();
 
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authEnabled, setAuthEnabled] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const status = await checkAuthStatus();
+      setIsAuthenticated(status.authenticated);
+      setAuthEnabled(status.authEnabled);
+      setAuthLoading(false);
+    };
+    checkAuth();
+  }, []);
+
   const fetchCredits = () => {
     if (apiKey) {
       apiClient.get('/me', { params: { apiKey } })
         .then(res => {
-          // Backend now returns total credits in subscriptionTokens
           setCredits(res.data.subscriptionTokens);
         })
         .catch(err => console.error("Failed to fetch user", err));
@@ -22,8 +38,36 @@ function App() {
   };
 
   useEffect(() => {
-    fetchCredits();
-  }, [apiKey]);
+    if (isAuthenticated) {
+      fetchCredits();
+    }
+  }, [apiKey, isAuthenticated]);
+
+  const handleLogout = async () => {
+    await logout();
+    setIsAuthenticated(false);
+  };
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-zinc-400">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login if auth is enabled and not authenticated
+  if (authEnabled && !isAuthenticated) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-background text-zinc-100 font-sans flex flex-col">
@@ -58,6 +102,17 @@ function App() {
           >
             <Settings className="w-5 h-5" />
           </button>
+
+          {/* Logout button (only show if auth is enabled) */}
+          {authEnabled && (
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-lg hover:bg-zinc-800 transition-colors text-zinc-400 hover:text-red-400"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </header>
 

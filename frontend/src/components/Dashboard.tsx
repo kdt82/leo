@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { apiClient, getOpenAIKey, getOpenAIModel } from '../api/client';
 import clsx from 'clsx';
 
@@ -67,6 +67,23 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
     const [initStrength, setInitStrength] = useState(0.3); // Lower = more similar to reference
     const [negativePrompt, setNegativePrompt] = useState('extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality');
 
+    // Important Variants
+    const [impVariant, setImpVariant] = useState('');
+    const IMPORTANT_VARIANTS = [
+        { label: "Summoning digital vines", value: "summoning_digital_vines" },
+        { label: "Holding two coins fused", value: "holding_two_coins_fused" },
+        { label: "Wearing an amulet", value: "wearing_an_amulet" },
+        { label: "Raising a cube", value: "raising_a_cube" },
+        { label: "Cradling a miniature world", value: "cradling_a_miniature_world" },
+        { label: "Holding a holographic display", value: "holding_a_holographic_display" },
+        { label: "Holding a staff", value: "holding_a_staff" },
+        { label: "Grasping a coin", value: "grasping_a_coin" },
+        { label: "Holding a glowing seed", value: "holding_a_glowing_seed" },
+        { label: "Cradling a glowing acorn", value: "cradling_a_glowing_acorn" },
+        { label: "Raising a golden token", value: "raising_a_golden_token" },
+        { label: "Holding up a circular item", value: "holding_up_a_circular_item" }
+    ];
+
     // Advanced settings
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [guidanceScale, setGuidanceScale] = useState(7);  // CFG scale (1-20)
@@ -125,7 +142,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                     body: formData
                 });
                 if (!uploadRes.ok) {
-                    throw new Error(`Upload failed: ${uploadRes.status}`);
+                    throw new Error(`Upload failed: ${uploadRes.status} `);
                 }
                 const uploadData = await uploadRes.json();
                 uploadedImageIds.push(uploadData.imageId);
@@ -168,12 +185,20 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                 }
 
                 // Prepend trigger word if Element is being used and trigger word is set
-                const finalPrompt = (loraId.trim() && triggerWord.trim())
-                    ? `${triggerWord.trim()}, ${basePrompt}`
+                // Also handle Important Variant injection
+                const variantObj = IMPORTANT_VARIANTS.find(v => v.value === impVariant);
+
+                let promptWithTrigger = (loraId.trim() && triggerWord.trim())
+                    ? `${triggerWord.trim()}, ${basePrompt} `
                     : basePrompt;
 
+                // Inject Important Variant if specific (append text description, append slug for filename)
+                if (variantObj) {
+                    promptWithTrigger = `${promptWithTrigger}, ${variantObj.label} imp = ${variantObj.value} `;
+                }
+
                 return {
-                    prompt: finalPrompt,
+                    prompt: promptWithTrigger,
                     negative,
                     prompt_number: promptNumber
                 };
@@ -293,7 +318,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
 
             const checkCompletion = setInterval(async () => {
                 try {
-                    const statusRes = await apiClient.get(`/jobs/${res.data.batchId}`);
+                    const statusRes = await apiClient.get(`/ jobs / ${res.data.batchId} `);
                     const s = statusRes.data;
                     setJobStatus(s);
                     if (s.completed + s.failed === s.total) {
@@ -411,6 +436,24 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    {/* Important Variant (IMP) */}
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                            <label className="text-sm text-zinc-400">Important Variant</label>
+                            <InfoTip text="Select a variant to be included in the generation. The description will be added to your prompt, and the 'imp' variants will be tracked in the filename." />
+                        </div>
+                        <select
+                            value={impVariant}
+                            onChange={e => setImpVariant(e.target.value)}
+                            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm"
+                        >
+                            <option value="">None</option>
+                            {IMPORTANT_VARIANTS.map(v => (
+                                <option key={v.value} value={v.value}>{v.label}</option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* Advanced Settings */}
@@ -747,7 +790,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                                 </div>
                                 <p className="text-[10px] text-zinc-600 text-center">
                                     {refImageMode === 'combined'
-                                        ? `All ${refImages.length} images guide EACH generation (best for character consistency)`
+                                        ? `All ${refImages.length} images guide EACH generation(best for character consistency)`
                                         : refImageMode === 'cycle'
                                             ? 'Each prompt uses one image (cycles if more prompts than images)'
                                             : `Each prompt × each image = ${prompts.split('\n').filter(x => x.trim()).length * refImages.length} generations`
@@ -779,25 +822,25 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                                         <div className="grid grid-cols-4 gap-1">
                                             <button
                                                 onClick={() => setReferenceType('character')}
-                                                className={`px-2 py-1.5 text-[10px] rounded transition ${referenceType === 'character' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}
+                                                className={`px - 2 py - 1.5 text - [10px] rounded transition ${referenceType === 'character' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'} `}
                                             >
                                                 👤 Character
                                             </button>
                                             <button
                                                 onClick={() => setReferenceType('style')}
-                                                className={`px-2 py-1.5 text-[10px] rounded transition ${referenceType === 'style' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}
+                                                className={`px - 2 py - 1.5 text - [10px] rounded transition ${referenceType === 'style' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'} `}
                                             >
                                                 🎨 Style
                                             </button>
                                             <button
                                                 onClick={() => setReferenceType('content')}
-                                                className={`px-2 py-1.5 text-[10px] rounded transition ${referenceType === 'content' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}
+                                                className={`px - 2 py - 1.5 text - [10px] rounded transition ${referenceType === 'content' ? 'bg-indigo-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'} `}
                                             >
                                                 📐 Content
                                             </button>
                                             <button
                                                 onClick={() => setReferenceType('basic')}
-                                                className={`px-2 py-1.5 text-[10px] rounded transition ${referenceType === 'basic' ? 'bg-yellow-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}
+                                                className={`px - 2 py - 1.5 text - [10px] rounded transition ${referenceType === 'basic' ? 'bg-yellow-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'} `}
                                             >
                                                 🔧 Basic
                                             </button>
@@ -973,22 +1016,22 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                                         className="flex items-center gap-2 text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded transition text-white"
                                     >
                                         <Download className="w-4 h-4" /> Download ZIP
-                                    </a>
+                                    </a >
                                 )}
                                 <div className="flex gap-4 text-sm font-mono">
                                     <span className="text-zinc-400">Total: <span className="text-white">{jobStatus?.total || 0}</span></span>
                                     <span className="text-green-400">Done: {jobStatus?.completed || 0}</span>
                                     <span className="text-indigo-400">Processing: {jobStatus?.processing || 0}</span>
                                 </div>
-                            </div>
-                        </div>
+                            </div >
+                        </div >
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {jobStatus?.jobs?.map((job: any) => (
                                 <JobCard key={job.id} job={job} onImageClick={setLightboxUrl} />
                             ))}
                         </div>
-                    </div>
+                    </div >
                 )
                 }
             </div >
@@ -1070,6 +1113,33 @@ function ResultsView() {
             .catch(console.error)
             .finally(() => setLoading(false));
     }, []);
+
+    // Navigation for ResultsView
+    const handleNext = useCallback(() => {
+        if (!selectedImage || !history.length) return;
+        const currentIndex = history.findIndex((item: any) => item.id === selectedImage.id);
+        if (currentIndex !== -1 && currentIndex < history.length - 1) {
+            setSelectedImage(history[currentIndex + 1]);
+        }
+    }, [selectedImage, history]);
+
+    const handlePrev = useCallback(() => {
+        if (!selectedImage || !history.length) return;
+        const currentIndex = history.findIndex((item: any) => item.id === selectedImage.id);
+        if (currentIndex !== -1 && currentIndex > 0) {
+            setSelectedImage(history[currentIndex - 1]);
+        }
+    }, [selectedImage, history]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!selectedImage) return;
+            if (e.key === 'ArrowLeft') handlePrev();
+            else if (e.key === 'ArrowRight') handleNext();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage, handleNext, handlePrev]);
 
     // Group history by batch_id
     const groupedHistory = history.reduce((acc: { [key: string]: any[] }, item: any) => {
@@ -1239,17 +1309,33 @@ function ResultsView() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Left: Image */}
-                        <div className="md:w-2/3 bg-black flex items-center justify-center p-4 min-h-[300px] md:min-h-0 relative">
+                        <div className="md:w-2/3 bg-black flex items-center justify-center p-4 min-h-[300px] md:min-h-0 relative group">
+                            {/* Navigation Buttons */}
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 z-20"
+                                disabled={history.findIndex((i: any) => i.id === selectedImage?.id) <= 0}
+                            >
+                                <ChevronLeft className="w-8 h-8" />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 z-20"
+                                disabled={history.findIndex((i: any) => i.id === selectedImage?.id) >= history.length - 1}
+                            >
+                                <ChevronRight className="w-8 h-8" />
+                            </button>
+
                             {/* Prompt Number Badge */}
                             {selectedImage.prompt_number && (
-                                <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg">
+                                <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg z-10">
                                     #{selectedImage.prompt_number}
                                 </div>
                             )}
                             {/* Current Tag Badge */}
                             {selectedImage.tag && (
                                 <div className={clsx(
-                                    "absolute top-4 right-4 px-3 py-1.5 rounded-lg text-sm font-medium shadow-lg",
+                                    "absolute top-4 right-4 px-3 py-1.5 rounded-lg text-sm font-medium shadow-lg z-10",
                                     selectedImage.tag === 'accept' && "bg-green-600 text-white",
                                     selectedImage.tag === 'maybe' && "bg-yellow-600 text-white",
                                     selectedImage.tag === 'declined' && "bg-red-600 text-white"
@@ -1448,9 +1534,58 @@ function GalleryView() {
     const [sortOrder, setSortOrder] = useState('desc');
     const [tagFilter, setTagFilter] = useState('');
     const [batchFilter, setBatchFilter] = useState('');
+    const [impFilter, setImpFilter] = useState('');
     const [page, setPage] = useState(0);
+
+    const IMPORTANT_VARIANTS = [
+        { label: "Summoning digital vines", value: "summoning_digital_vines" },
+        { label: "Holding two coins fused", value: "holding_two_coins_fused" },
+        { label: "Wearing an amulet", value: "wearing_an_amulet" },
+        { label: "Raising a cube", value: "raising_a_cube" },
+        { label: "Cradling a miniature world", value: "cradling_a_miniature_world" },
+        { label: "Holding a holographic display", value: "holding_a_holographic_display" },
+        { label: "Holding a staff", value: "holding_a_staff" },
+        { label: "Grasping a coin", value: "grasping_a_coin" },
+        { label: "Holding a glowing seed", value: "holding_a_glowing_seed" },
+        { label: "Cradling a glowing acorn", value: "cradling_a_glowing_acorn" },
+        { label: "Raising a golden token", value: "raising_a_golden_token" },
+        { label: "Holding up a circular item", value: "holding_up_a_circular_item" }
+    ];
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const pageSize = 50;
+
+    // Navigation Logic
+    const handleNext = useCallback(() => {
+        if (!selectedImage || !gallery.items.length) return;
+        const currentIndex = gallery.items.findIndex((item: any) => item.id === selectedImage.id);
+        if (currentIndex !== -1 && currentIndex < gallery.items.length - 1) {
+            setSelectedImage(gallery.items[currentIndex + 1]);
+        }
+    }, [selectedImage, gallery.items]);
+
+    const handlePrev = useCallback(() => {
+        if (!selectedImage || !gallery.items.length) return;
+        const currentIndex = gallery.items.findIndex((item: any) => item.id === selectedImage.id);
+        if (currentIndex !== -1 && currentIndex > 0) {
+            setSelectedImage(gallery.items[currentIndex - 1]);
+        }
+    }, [selectedImage, gallery.items]);
+
+    // Keyboard Navigation
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!selectedImage) return;
+
+            if (e.key === 'ArrowLeft') {
+                handlePrev();
+            } else if (e.key === 'ArrowRight') {
+                handleNext();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage, handleNext, handlePrev]);
 
     const fetchGallery = async () => {
         setLoading(true);
@@ -1463,6 +1598,7 @@ function GalleryView() {
             });
             if (tagFilter) params.append('tag', tagFilter);
             if (batchFilter) params.append('batch', batchFilter);
+            if (impFilter) params.append('imp', impFilter);
 
             const res = await apiClient.get(`/gallery?${params.toString()}`);
             setGallery(res.data);
@@ -1475,12 +1611,13 @@ function GalleryView() {
 
     useEffect(() => {
         fetchGallery();
-    }, [sortBy, sortOrder, tagFilter, batchFilter, page]);
+    }, [sortBy, sortOrder, tagFilter, batchFilter, impFilter, page]);
 
     const handleExport = async (format: 'csv' | 'zip') => {
         const params = new URLSearchParams({ format });
         if (tagFilter) params.append('tag', tagFilter);
         if (batchFilter) params.append('batch', batchFilter);
+        if (impFilter) params.append('imp', impFilter);
 
         window.open(`http://localhost:8000/api/v1/export?${params.toString()}`, '_blank');
     };
@@ -1594,10 +1731,25 @@ function GalleryView() {
                     </select>
                 </div>
 
+                {/* IMP Filter */}
+                <div className="flex flex-col gap-1">
+                    <label className="text-xs text-zinc-500 uppercase tracking-wider">Variant</label>
+                    <select
+                        value={impFilter}
+                        onChange={(e) => { setImpFilter(e.target.value); setPage(0); }}
+                        className="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none max-w-[150px]"
+                    >
+                        <option value="">All Variants</option>
+                        {IMPORTANT_VARIANTS.map(v => (
+                            <option key={v.value} value={v.value}>{v.label}</option>
+                        ))}
+                    </select>
+                </div>
+
                 {/* Clear Filters */}
-                {(tagFilter || batchFilter) && (
+                {(tagFilter || batchFilter || impFilter) && (
                     <button
-                        onClick={() => { setTagFilter(''); setBatchFilter(''); setPage(0); }}
+                        onClick={() => { setTagFilter(''); setBatchFilter(''); setImpFilter(''); setPage(0); }}
                         className="self-end px-3 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
                     >
                         Clear Filters
@@ -1780,7 +1932,22 @@ function GalleryView() {
                         className="bg-surface border border-zinc-800 rounded-2xl overflow-hidden max-w-6xl w-full max-h-[90vh] flex flex-col md:flex-row shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="md:w-2/3 bg-black flex items-center justify-center p-4 min-h-[300px] md:min-h-0 relative">
+                        <div className="md:w-2/3 bg-black flex items-center justify-center p-4 min-h-[300px] md:min-h-0 relative group">
+                            {/* Navigation Buttons */}
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 z-20"
+                                disabled={gallery.items.findIndex((i: any) => i.id === selectedImage?.id) <= 0}
+                            >
+                                <ChevronLeft className="w-8 h-8" />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0 z-20"
+                                disabled={gallery.items.findIndex((i: any) => i.id === selectedImage?.id) >= gallery.items.length - 1}
+                            >
+                                <ChevronRight className="w-8 h-8" />
+                            </button>
                             {selectedImage.prompt_number && (
                                 <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg">
                                     #{selectedImage.prompt_number}

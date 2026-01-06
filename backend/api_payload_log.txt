@@ -7095,3 +7095,2086 @@
   "presetStyle": "DYNAMIC"
 }
 ============================================================
+
+============================================================
+[2026-01-02T12:09:08.145888] Leonardo API Request:
+{
+  "prompt": "2769\tA detailed comic-book style superhero defined by a glowing tree roots emblem centered on his chest, formed from intertwined purple and green vines with refined gold accents over a powerful athletic physique, wearing a fitted lower-face mask (no exposed facial features), a lustrous golden silk cape, and complete arborist gear including a protective helmet and rope harness with purposeful straps and carabiners. He holds a single engraved golden token in one hand, its subtle glow echoing the vine-gold detailing. He stands heroically atop a rugged mountain peak as emerald mist curls around his boots, with layered alpine ridgelines behind him and warm sunrise light cutting through pale fog. Soft, controlled energy shimmer traces along the vine contours as a refined accent, Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:08.444209] Leonardo API Request:
+{
+  "prompt": "2793\tMarked by a vivid Tree Roots emblem on his chest, a detailed comic-book style superhero with a powerful physique formed from intertwined purple and green vines traced with refined gold accents wears a fitted lower-face mask and an emerald cape trimmed with gold, fully equipped with arborist gear including a protective helmet and rope harness, standing with arms crossed in a temple overgrown with living vines and weathered stone ruins underfoot with creeping roots and broken pillars in the background, with no aura and only subtle, controlled highlights on the gold accents acting as a refined accent, Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:08.754368] Leonardo API Request:
+{
+  "prompt": "2823\tA detailed comic-book style superhero defined by a glowing Tree Roots emblem on his chest, his powerful physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and a matte black cape, outfitted with professional arborist gear including a rugged helmet and rope harness, arms crossed in a confident stance, with one coiled rope line hanging from the harness as a single purposeful prop. He stands atop a jagged mountain peak at dawn, mist curling around rocky ground as warm sunrise light silhouettes the scene and distant ridgelines fade into atmospheric haze. A soft, controlled golden glow surrounds him as a refined accent enhancing contained power, Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:09.048975] Leonardo API Request:
+{
+  "prompt": "2856\tA striking comic-book style superhero defined by a glowing tree roots emblem centered on his chest, built from intertwined purple and green vines with refined gold accents over a powerful athletic physique, wearing a fitted lower-face mask and a matte black cape, outfitted with arborist gear including a protective helmet and rope harness with carabiners and climbing lines. In one raised hand he holds a single engraved token catching the light. He stands within an ancient temple overgrown with living vines and weathered stone ruins, cracked flagstones and creeping roots framing the scene. Soft, controlled lightning energy arcs around his silhouette as a refined accent, enhancing the sense of contained power. Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:09.349306] Leonardo API Request:
+{
+  "prompt": "2885\tA striking comic-book style superhero distinguished by a glowing tree roots emblem centered on his chest, formed from intertwined purple and green vines with refined gold accents over a powerful athletic physique, wearing a fitted lower-face mask and a flowing golden silk cape, outfitted with consistent arborist gear including a sturdy helmet and rope harness with carabiners. In one hand he grips a coiled climbing rope as a single purposeful prop. He is captured mid-leap on a rugged mountain peak above jagged rock ledges, surrounded by rolling mist and warm sunrise light spilling across the horizon. Subtle, controlled lightning energy arcs around his limbs as a refined accent enhancing contained power. Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:09.656667] Leonardo API Request:
+{
+  "prompt": "2919\tA striking comic-book style superhero defined by a glowing Tree Roots emblem on the center of his chest, set into an athletic physique formed from intertwined purple and green living vines traced with refined gold accents; he wears a fitted lower-face mask with no exposed facial features, no cape, and integrated arborist gear including a rugged helmet and secure rope harness with neatly coiled lines. He stands heroically in a vast cosmic nebula backdrop filled with swirling stars and deep-space color gradients, emerald mist curling around his legs and drifting across the scene. Subtle, controlled glistening energy highlights the vine textures as a refined accent, enhancing the sense of contained power. Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:09.961215] Leonardo API Request:
+{
+  "prompt": "2948\t\"Defined by a glowing tree roots emblem centered on his chest, a detailed comic-book style superhero with a powerful physique formed from intertwined purple and green vines traced with refined gold accents wears a fitted lower-face mask, arborist helmet, and rope harness, plus a cape of overlapping green leaves flowing behind him; he raises a single engraved token in one hand as a signature prop. He stands within an ancient temple of living vines and weathered stone ruins, with creeping roots and cracked flagstones underfoot and vine-wrapped pillars framing the background. No aura, with only subtle, controlled highlights on the gold accents to enhance contained power. Centered composition, head-to-toe, full-body, square format, cinematic lighting.\"",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:10.263114] Leonardo API Request:
+{
+  "prompt": "2953\tA detailed comic-book style superhero distinguished by a Tree Roots emblem on his chest, his powerful physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and a flowing golden silk cape with full arborist gear including a protective helmet and rope harness, posed in a dominant power stance with one fist down and the other hand relaxed at his side. He stands within an overgrown temple of vines and ancient stone ruins, creeping tendrils wrapping cracked pillars and mossy steps beneath his boots. No aura or energy effects, centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:10.569531] Leonardo API Request:
+{
+  "prompt": "3004\tA striking comic-book style superhero defined by a glowing tree roots emblem centered on his chest, his powerful physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and a matte black cape flowing behind him, equipped with arborist gear including a rugged safety helmet and a rope harness strapped across his torso and hips. He holds a single coiled climbing rope in one hand while the other fist is planted down in a grounded power stance. He stands within an ancient temple overgrown with living vines and weathered stone ruins, with creeping roots and cracked flagstones beneath his feet and vine-wrapped pillars framing the background. Subtle, controlled lightning energy arcs around his body as a contained accent, enhancing the sense of restrained power. Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:09:10.879657] Leonardo API Request:
+{
+  "prompt": "3196\t\"Defined by a glowing Tree Roots emblem on his chest, a striking comic-book style superhero with a powerful physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask, matte black cape, and full arborist gear including a protective helmet and rope harness with carabiners and coiled line. His stance is a grounded power pose with one fist driven down toward the ground. He stands within a vast cosmic nebula filled with swirling stars and luminous dust clouds, the space backdrop framing his silhouette. Subtle, controlled lightning energy arcs around his body as a refined accent enhancing contained power. Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.\"",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "168cea98-89fc-41fe-a12a-5b8380c5e7fa"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:46.942996] Leonardo API Request:
+{
+  "prompt": "2769\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in a mountain peak with mist and sunrise light, standing heroically, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:47.242499] Leonardo API Request:
+{
+  "prompt": "2793\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing an emerald cape trimmed with gold, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, arms crossed, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:47.539867] Leonardo API Request:
+{
+  "prompt": "2823\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by golden glow, standing in a mountain peak with mist and sunrise light, arms crossed, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:47.853785] Leonardo API Request:
+{
+  "prompt": "2856\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a temple of vines and stone ruins, raising a token, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:48.155526] Leonardo API Request:
+{
+  "prompt": "2885\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a mountain peak with mist and sunrise light, leaping forward, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:48.456082] Leonardo API Request:
+{
+  "prompt": "2919\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing no cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in a cosmic nebula with swirling stars, standing heroically, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:48.762972] Leonardo API Request:
+{
+  "prompt": "2948\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a cape made of overlapping green leaves, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, raising a token, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:49.061544] Leonardo API Request:
+{
+  "prompt": "2953\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:49.365659] Leonardo API Request:
+{
+  "prompt": "3004\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a temple of vines and stone ruins, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T12:12:49.665579] Leonardo API Request:
+{
+  "prompt": "3196\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a cosmic nebula with swirling stars, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "481893ea-ba8f-43ad-b38f-51d7ea89ab7e"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:55.486444] Leonardo API Request:
+{
+  "prompt": "2769\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in a mountain peak with mist and sunrise light, standing heroically, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:55.814567] Leonardo API Request:
+{
+  "prompt": "2793\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing an emerald cape trimmed with gold, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, arms crossed, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:56.146845] Leonardo API Request:
+{
+  "prompt": "2823\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by golden glow, standing in a mountain peak with mist and sunrise light, arms crossed, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:56.465386] Leonardo API Request:
+{
+  "prompt": "2856\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a temple of vines and stone ruins, raising a token, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:56.789451] Leonardo API Request:
+{
+  "prompt": "2885\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a mountain peak with mist and sunrise light, leaping forward, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:57.105816] Leonardo API Request:
+{
+  "prompt": "2948\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a cape made of overlapping green leaves, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, raising a token, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:57.423234] Leonardo API Request:
+{
+  "prompt": "2953\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a golden silk cape, with a root pattern emblem on his chest, surrounded by no aura, standing in a temple of vines and stone ruins, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:57.748938] Leonardo API Request:
+{
+  "prompt": "3004\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a temple of vines and stone ruins, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:58.067156] Leonardo API Request:
+{
+  "prompt": "3196\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a matte black cape, with a root pattern emblem on his chest, surrounded by lightning energy, standing in a cosmic nebula with swirling stars, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:06:58.388520] Leonardo API Request:
+{
+  "prompt": "3211\tComic-book style arborist superhero, consistent character identity, locked chest emblem and costume, full-body, centered composition. A detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, wearing a cape made of overlapping green leaves, with a root pattern emblem on his chest, surrounded by emerald mist, standing in a mountain peak with mist and sunrise light, power stance with fist down, wearing arborist gear with helmet and rope harness. Centered composition, head-to-toe, full-body, square format.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": 1047987028,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "16e7f343-5b7e-48cf-aaef-8f9134be2c6a"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "CREATIVE"
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:54.625999] Leonardo API Request:
+{
+  "prompt": "2728 A striking comic-book style arborist superhero defined by a glowing root pattern emblem on his chest, locked consistent character identity with a powerful physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and dark sunglasses with a matte black cape draped behind him as he stands arms crossed in a heroic stance. He is posed on a rugged mountain peak with crisp rock textures underfoot, mist rolling through the valleys, and sunrise rays cutting through the haze with exciting lighting. A soft, controlled golden glow subtly halos his silhouette as a refined accent, enhancing the sense of contained power. Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:54.947615] Leonardo API Request:
+{
+  "prompt": "2735 \"Distinguished by a vivid root pattern emblem centered on his chest, a consistent comic-book style arborist superhero with a powerful athletic physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and a matte black cape with arborist helmet and harness details integrated into the suit for a locked, consistent costume identity. He raises a single glowing token in one hand while gripping a formidable chainsaw in the other, both rendered with crisp inked linework and high-detail comic shading. He stands amid emerald mist on subtle root-like ground textures within a vast cosmic nebula filled with swirling stars and luminous color gradients. Subtle, controlled emerald energy wisps and soft glints act as refined accents around his silhouette, exciting lighting, Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.\"",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:55.259859] Leonardo API Request:
+{
+  "prompt": "2740 A striking comic-book style arborist superhero distinguished by a glowing root pattern emblem centered on his chest, his powerful physique formed from intertwined purple and green vines with refined gold accents and a sleek, fitted lower-face mask (no exposed facial features), no cape, with an intentionally consistent locked costume design and character identity; he raises a single engraved token in one hand with no additional accessory. He stands amid emerald mist inside an ancient temple of living vines and weathered stone ruins, with creeping roots and carved masonry framing the scene. Subtle, controlled green-gold energy filaments and soft particulate glow act as a refined accent, enhancing the sense of contained power, exciting lighting, Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:55.568137] Leonardo API Request:
+{
+  "prompt": "2754 A striking comic-book style arborist superhero defined by a glowing root pattern emblem on his chest, radiating a golden halo, with a powerful athletic physique formed from intertwined purple and green vines threaded with refined gold accents, a fitted lower-face mask with no exposed facial features, no cape, and a locked consistent costume identity with bark-like paneling and vine-wrapped gauntlets and boots; in one hand he grips a powerful arborist chainsaw with polished metal housing and subtle gold trim. He is captured mid-leap in a temple of living vines and weathered stone ruins, tangled roots and cracked pillars framing the scene with creeping greenery across the ground. A soft, controlled golden glow and faint energy filaments accent his motion without overpowering the figure, exciting lighting, Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:55.878599] Leonardo API Request:
+{
+  "prompt": "2769 A striking comic-book style arborist superhero defined by a glowing root pattern emblem centered on his chest, built from intertwined purple and green vines with refined gold accents over a powerful athletic physique, wearing a fitted lower-face mask and full arborist gear with a protective helmet and rope harness, finished with a flowing golden silk cape that catches the wind. One hand grips a coiled climbing rope while the other holds a compact carabiner token, reinforcing his professional hero identity. He stands heroically atop a rugged mountain peak with rocky ground and sparse alpine plants, emerald mist curling around his boots as sunrise breaks through layered clouds behind him. Subtle, controlled emerald energy haze and softly glistening highlights act as a refined accent, exciting lighting, Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:56.188940] Leonardo API Request:
+{
+  "prompt": "2781 A striking comic-book style arborist superhero distinguished by a glowing root pattern emblem centered on his chest, built from intertwined purple and green vines traced with refined gold accents over a powerful athletic physique, wearing a fitted lower-face mask with dark sunglasses and a flowing golden silk cape, with an arborist helmet and secure climbing harness integrated into the suit for consistent gear, holding a single engraved golden token in one hand, leaping forward on a jagged mountain peak above rolling mist as sunrise breaks across the horizon, emerald mist curling around his legs, subtle controlled green energy filaments acting as a refined accent, exciting lighting, Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:56.497625] Leonardo API Request:
+{
+  "prompt": "2784 A striking comic-book style arborist superhero defined by a glowing root pattern emblem centered on his chest, built with a powerful athletic physique formed from intertwined purple and green vines traced with refined gold accents, wearing a sleek fitted mask that covers the lower face, no cape, and a locked consistent costume identity with bark-like textures and vine-wrapped gauntlets as his arms cross in a confident stance; he grips a single large battle axe with engraved metallic edges and subtle gold inlays. He stands atop a rugged mountain peak with jagged stone underfoot, drifting mist rolling through the cliffs, and warm sunrise light breaking over the horizon behind him. Refined, controlled lightning energy arcs softly around his silhouette as a contained accent, enhancing the sense of contained power; exciting lighting, Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:56.821175] Leonardo API Request:
+{
+  "prompt": "2787 A striking comic-book style arborist superhero distinguished by a glowing root pattern emblem centered on his chest, built on a powerful athletic physique formed from intertwined purple and green vines traced with refined gold accents, wearing a fitted lower-face mask and a dramatic cape made of overlapping green leaves with subtle vein detail, his suit design locked and consistent with purposeful botanical textures and clean comic-ink linework; in one hand he grips a powerful professional chainsaw with polished metal housing and vine-wrapped handle while the other arm is posed in a grounded power stance with fist down. He stands against a cosmic nebula backdrop with swirling stars and faint prismatic clouds, with soft, controlled lightning energy arcing around his silhouette as a refined accent enhancing contained power, exciting lighting, Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:57.137242] Leonardo API Request:
+{
+  "prompt": "2790 A striking comic-book style arborist superhero defined by a locked root pattern emblem on his chest surrounded by a refined golden glow, his powerful physique formed from intertwined purple and green vines traced with elegant gold accents and a fitted lower-face mask that hides all facial features, wearing a cape made of overlapping green leaves that fans behind him as he leaps forward in a dynamic yet readable pose with no additional accessory, set against a vast cosmic nebula backdrop of swirling stars and softly layered stardust clouds beneath his feet, subtle controlled energy shimmer and rim highlights acting as a contained accent with exciting lighting. Centered composition, head-to-toe, full-body, square format, cinematic lighting.",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T13:10:57.445665] Leonardo API Request:
+{
+  "prompt": "2793 \"A striking comic-book style arborist superhero defined by a bold root pattern emblem centered on his chest, built from intertwined purple and green vines with refined gold accents over a powerful physique, wearing a fitted lower-face mask and an emerald cape trimmed with gold, plus authentic arborist gear including a protective helmet and rope harness, arms crossed in a confident stance. He stands within an ancient temple of living vines and weathered stone ruins, with creeping roots and carved masonry framing the scene and a grounded, natural atmosphere with no aura. Exciting lighting with subtle, controlled rim highlights acting as a refined accent to emphasize texture and form. Centered composition, head-to-toe, full-body depiction, square format, cinematic lighting.\"",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "8ed8d485-54df-45d4-b421-74dc56a62ad1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:04:51.118114] Leonardo API Request:
+{
+  "prompt": "3948\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a blue droplet-shaped emblem featuring an S-curve on his chest, surrounded by emerald mist, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "700fe91d-b8ee-433f-9049-a458c30654e3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:04:51.461536] Leonardo API Request:
+{
+  "prompt": "3142\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a blue droplet-shaped emblem featuring an S-curve on his chest, surrounded by golden glow, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "700fe91d-b8ee-433f-9049-a458c30654e3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:04:51.795470] Leonardo API Request:
+{
+  "prompt": "4858\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a blue droplet-shaped emblem featuring an S-curve on his chest, surrounded by no aura, standing in mountain peak with mist and sunrise light, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "700fe91d-b8ee-433f-9049-a458c30654e3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:11.205387] Leonardo API Request:
+{
+  "prompt": "4273\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a faceted crystal gem on his chest, surrounded by golden glow, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:11.520098] Leonardo API Request:
+{
+  "prompt": "3532\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a faceted crystal gem on his chest, surrounded by no aura, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:11.822217] Leonardo API Request:
+{
+  "prompt": "3454\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a faceted crystal gem on his chest, surrounded by fire aura, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:12.124432] Leonardo API Request:
+{
+  "prompt": "4507\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a faceted crystal gem on his chest, surrounded by lightning energy, standing in radiant city skyline at dusk, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:12.443892] Leonardo API Request:
+{
+  "prompt": "4611\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a faceted crystal gem on his chest, surrounded by lightning energy, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:12.764610] Leonardo API Request:
+{
+  "prompt": "3857\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing no cape, with a faceted crystal gem on his chest, surrounded by emerald mist, standing in radiant city skyline at dusk, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:17:13.066486] Leonardo API Request:
+{
+  "prompt": "4312\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing no cape, with a faceted crystal gem on his chest, surrounded by lightning energy, standing in temple of vines and stone ruins, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "6b56c47e-4b31-4343-b2dd-34be4ff306b7"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:24:46.991273] Leonardo API Request:
+{
+  "prompt": "3675\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a five-pointed golden star emblem on his chest, surrounded by emerald mist, standing in mountain peak with mist and sunrise light, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "435f2731-052f-496d-bd4b-e9be52594fa3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:24:47.288463] Leonardo API Request:
+{
+  "prompt": "3844\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a five-pointed golden star emblem on his chest, surrounded by lightning energy, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "435f2731-052f-496d-bd4b-e9be52594fa3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:24:47.598699] Leonardo API Request:
+{
+  "prompt": "4000\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a five-pointed golden star emblem on his chest, surrounded by golden glow, standing in radiant city skyline at dusk, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "435f2731-052f-496d-bd4b-e9be52594fa3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:24:47.913076] Leonardo API Request:
+{
+  "prompt": "3441\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a five-pointed golden star emblem on his chest, surrounded by lightning energy, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "435f2731-052f-496d-bd4b-e9be52594fa3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:24:48.207866] Leonardo API Request:
+{
+  "prompt": "4078\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a five-pointed golden star emblem on his chest, surrounded by emerald mist, standing in cosmic nebula with swirling stars, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "435f2731-052f-496d-bd4b-e9be52594fa3"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T14:29:59.550925] Leonardo API Request:
+{
+  "prompt": "3545\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a root pattern emblem on his chest, surrounded by fire aura, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:29:59.855983] Leonardo API Request:
+{
+  "prompt": "3584\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a root pattern emblem on his chest, surrounded by fire aura, standing in cosmic nebula with swirling stars, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:00.213102] Leonardo API Request:
+{
+  "prompt": "4169\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a root pattern emblem on his chest, surrounded by fire aura, standing in enchanted forest with glowing roots, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:00.574273] Leonardo API Request:
+{
+  "prompt": "2986\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a root pattern emblem on his chest, surrounded by fire aura, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:00.870598] Leonardo API Request:
+{
+  "prompt": "3116\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a root pattern emblem on his chest, surrounded by golden glow, standing in enchanted forest with glowing roots, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:01.173212] Leonardo API Request:
+{
+  "prompt": "3662\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:01.492052] Leonardo API Request:
+{
+  "prompt": "3922\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:01.786033] Leonardo API Request:
+{
+  "prompt": "2882\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing no cape, with a root pattern emblem on his chest, surrounded by emerald mist, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:02.085394] Leonardo API Request:
+{
+  "prompt": "3038\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing no cape, with a root pattern emblem on his chest, surrounded by no aura, standing in mountain peak with mist and sunrise light, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:02.386829] Leonardo API Request:
+{
+  "prompt": "2804\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a tree-of-life emblem on his chest, surrounded by fire aura, standing in radiant city skyline at dusk, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:17.947589] Leonardo API Request:
+{
+  "prompt": "3129\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a tree-of-life emblem on his chest, surrounded by emerald mist, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:18.311156] Leonardo API Request:
+{
+  "prompt": "3506\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing cape made of overlapping green leaves, with a tree-of-life emblem on his chest, surrounded by no aura, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:18.624796] Leonardo API Request:
+{
+  "prompt": "3051\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a tree-of-life emblem on his chest, surrounded by golden glow, standing in radiant city skyline at dusk, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:18.947943] Leonardo API Request:
+{
+  "prompt": "3636\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a tree-of-life emblem on his chest, surrounded by lightning energy, standing in temple of vines and stone ruins, leaping forward. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:19.274766] Leonardo API Request:
+{
+  "prompt": "4247\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing emerald cape trimmed with gold, with a tree-of-life emblem on his chest, surrounded by emerald mist, standing in enchanted forest with glowing roots, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:19.596630] Leonardo API Request:
+{
+  "prompt": "2908\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a tree-of-life emblem on his chest, surrounded by no aura, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:19.900854] Leonardo API Request:
+{
+  "prompt": "3012\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing golden silk cape, with a tree-of-life emblem on his chest, surrounded by fire aura, standing in cosmic nebula with swirling stars, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:20.227772] Leonardo API Request:
+{
+  "prompt": "3350\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a tree-of-life emblem on his chest, surrounded by golden glow, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:20.585303] Leonardo API Request:
+{
+  "prompt": "4234\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a tree-of-life emblem on his chest, surrounded by no aura, standing in radiant city skyline at dusk, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:20.902301] Leonardo API Request:
+{
+  "prompt": "4416\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing matte black cape, with a tree-of-life emblem on his chest, surrounded by emerald mist, standing in mountain peak with mist and sunrise light, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T14:30:36.447291] Leonardo API Request:
+{
+  "prompt": "3155\tA detailed comic-book style superhero made of purple and green vines with gold accents and a fitted mask that covers the lower face, Cradling a glowing acorn that radiates golden light, wearing no cape, with a tree-of-life emblem on his chest, surrounded by lightning energy, standing in temple of vines and stone ruins, standing heroically. Centered composition, head-to-toe, full-body, square format., Cradling a glowing acorn imp=cradling_a_glowing_acorn",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "b4a6b92d-b365-456b-a8be-c9e48e45b7df"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:37.612225] Leonardo API Request:
+{
+  "prompt": "4273\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tgolden glow\tmountain peak with mist and sunrise light\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:37.902343] Leonardo API Request:
+{
+  "prompt": "3532\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tno aura\ttemple of vines and stone ruins\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:38.269985] Leonardo API Request:
+{
+  "prompt": "3454\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tfire aura\tmountain peak with mist and sunrise light\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:38.667214] Leonardo API Request:
+{
+  "prompt": "4507\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\tradiant city skyline at dusk\tleaping forward\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:39.020568] Leonardo API Request:
+{
+  "prompt": "4611\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\ttemple of vines and stone ruins\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:39.318092] Leonardo API Request:
+{
+  "prompt": "3857\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\temerald mist\tradiant city skyline at dusk\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:09:39.608683] Leonardo API Request:
+{
+  "prompt": "4312\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\ttemple of vines and stone ruins\tleaping forward\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "565d4010-1fb9-44df-a45a-9a6c581ae0c4"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:56.929769] Leonardo API Request:
+{
+  "prompt": "4273\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tgolden glow\tmountain peak with mist and sunrise light\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:57.243932] Leonardo API Request:
+{
+  "prompt": "3532\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tno aura\ttemple of vines and stone ruins\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:57.546890] Leonardo API Request:
+{
+  "prompt": "3454\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tfire aura\tmountain peak with mist and sunrise light\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:57.847464] Leonardo API Request:
+{
+  "prompt": "4507\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\tradiant city skyline at dusk\tleaping forward\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:58.151005] Leonardo API Request:
+{
+  "prompt": "4611\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\ttemple of vines and stone ruins\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:58.457476] Leonardo API Request:
+{
+  "prompt": "3857\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\temerald mist\tradiant city skyline at dusk\tstanding heroically\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:14:58.768587] Leonardo API Request:
+{
+  "prompt": "4312\tCradling a glowing acorn that radiates golden light\tCradling a glowing acorn that radiates golden light\twith a faceted crystal gem on his chest\tlightning energy\ttemple of vines and stone ruins\tleaping forward\tholding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "ae8f24ea-9372-4581-b589-890a8c48b655"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:47.432860] Leonardo API Request:
+{
+  "prompt": "4273 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest golden glow mountain peak with mist and sunrise light standing heroically left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:47.729754] Leonardo API Request:
+{
+  "prompt": "3532 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest no aura temple of vines and stone ruins standing heroically left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:48.025192] Leonardo API Request:
+{
+  "prompt": "3454 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest fire aura mountain peak with mist and sunrise light standing heroically left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:48.321978] Leonardo API Request:
+{
+  "prompt": "4507 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest lightning energy radiant city skyline at dusk leaping forward left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:48.613189] Leonardo API Request:
+{
+  "prompt": "4611 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest lightning energy temple of vines and stone ruins standing heroically left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:48.906005] Leonardo API Request:
+{
+  "prompt": "3857 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest emerald mist radiant city skyline at dusk standing heroically left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================
+
+============================================================
+[2026-01-02T15:24:49.195201] Leonardo API Request:
+{
+  "prompt": "4312 right hand holding a glowing acorn that radiates golden light right hand holding a glowing acorn that radiates golden light with a green faceted crystal gem on his chest lightning energy temple of vines and stone ruins leaping forward left hand holding a large battle axe confidently, Cradling a glowing acorn imp = cradling_a_glowing_acorn ",
+  "modelId": "28aeddf8-bd19-4803-80fc-79602d1a9989",
+  "negative_prompt": "extra limbs, extra arms, extra legs, deformed hands, deformed fingers, malformed limbs, disfigured, bad anatomy, mutated, ugly, blurry, low quality",
+  "width": 1024,
+  "height": 1024,
+  "num_images": 1,
+  "seed": null,
+  "contextImages": [
+    {
+      "type": "UPLOADED",
+      "id": "4eb930c8-e137-48a0-b16f-b6e723b7a3d1"
+    }
+  ],
+  "guidance_scale": 7,
+  "num_inference_steps": 30,
+  "presetStyle": "DYNAMIC"
+}
+============================================================

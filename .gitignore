@@ -1,25 +1,47 @@
-# Environment files (contain secrets)
+# Environment files (contain secrets) - NEVER commit these
 .env
 .env.local
 .env.*.local
+*.env
+!.env.example
 
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+.Python
 venv/
 venv312/
+.venv/
+*.egg-info/
 
 # Node
 node_modules/
+dist/
+.npm
 
 # Output files
 outputs/
 *.log
+api_payload_log.txt
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker volumes (local)
+postgres_data/
+letsencrypt/
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # OS
 .DS_Store
 Thumbs.db
+*.bak

@@ -221,36 +221,66 @@ async def classify_prompts(file: UploadFile = File(...)):
         contents = await file.read()
         text_content = contents.decode('utf-8')
         
-        # Parse CSV
-        reader = csv.DictReader(io.StringIO(text_content))
+        # Use csv.reader for more flexibility with headers
+        f = io.StringIO(text_content)
+        reader = csv.reader(f)
+        rows = list(reader)
         
-        # Find the Number and Prompt columns (case-insensitive)
-        fieldnames = reader.fieldnames or []
-        number_col = None
-        prompt_col = None
+        if not rows:
+            raise HTTPException(status_code=400, detail="CSV file is empty")
+            
+        header_row = rows[0]
+        number_idx = -1
+        prompt_idx = -1
         
-        for col in fieldnames:
-            if col.lower() == 'number':
-                number_col = col
-            elif col.lower() == 'prompt':
-                prompt_col = col
-        
-        if not number_col or not prompt_col:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"CSV must have 'Number' and 'Prompt' columns. Found: {fieldnames}"
-            )
+        # Strategy 1: Look for specific headers in the first row
+        for idx, col in enumerate(header_row):
+            clean_col = col.strip().lower()
+            if clean_col == 'number':
+                number_idx = idx
+            elif clean_col == 'prompt':
+                prompt_idx = idx
+                
+        # Strategy 2: If headers not found, assume position if row count > 1
+        # Assumes Column 0 = Number, Column 1 = Prompt
+        start_row_index = 1
+        if number_idx == -1 or prompt_idx == -1:
+            # Check if first row looks like data (e.g. number is digit)
+            # If strictly digit, likely data. If text, likely header.
+            first_cell = header_row[0].strip()
+            if first_cell.isdigit():
+                # First row is data, assume 0=Number, 1=Prompt
+                number_idx = 0
+                prompt_idx = 1
+                start_row_index = 0
+            else:
+                # First row might be unknown headers, but let's try to map 0 and 1 anyway
+                # defaulting to 0 and 1 if we have at least 2 cols
+                if len(header_row) >= 2:
+                    number_idx = 0
+                    prompt_idx = 1
+                    # We assume first row is header since it wasn't digits
+                    start_row_index = 1
+                else:
+                     raise HTTPException(
+                        status_code=400, 
+                        detail=f"Could not confirm 'Number' and 'Prompt' columns. Found: {header_row}"
+                    )
         
         # Classify each row
         results = []
         group_counts = {i: 0 for i in range(1, 13)}
         invalid_count = 0
         
-        for row in reader:
-            number = row.get(number_col, "")
-            prompt = row.get(prompt_col, "")
+        for i in range(start_row_index, len(rows)):
+            row = rows[i]
+            if len(row) <= max(number_idx, prompt_idx):
+                continue
+                
+            number = row[number_idx].strip()
+            prompt = row[prompt_idx].strip()
             
-            if not prompt.strip():
+            if not prompt:
                 continue
             
             classified = classify_prompt(str(number), prompt)
@@ -319,7 +349,7 @@ async def classify_prompts_download(file: UploadFile = File(...)):
 @router.get("/history")
 async def get_jobs_history(limit: int = 50, offset: int = 0):
     """Get past generations from local DB"""
-    return get_history(limit, offset)
+    return await get_history(limit, offset)
 
 @router.get("/gallery")
 async def get_gallery_view(
@@ -327,15 +357,17 @@ async def get_gallery_view(
     sort_order: str = Query("desc", description="Sort order: asc or desc"),
     tag: Optional[str] = Query(None, description="Filter by tag: accept, maybe, declined, untagged"),
     batch: Optional[str] = Query(None, description="Filter by batch_id"),
+    imp: Optional[str] = Query(None, description="Filter by Important Variant (imp)"),
     limit: int = Query(100, description="Number of results"),
     offset: int = Query(0, description="Offset for pagination")
 ):
     """Get gallery view with sorting and filtering"""
-    return get_gallery(
+    return await get_gallery(
         sort_by=sort_by,
         sort_order=sort_order,
         tag_filter=tag,
         batch_filter=batch,
+        imp_filter=imp,
         limit=limit,
         offset=offset
     )
@@ -347,7 +379,7 @@ async def set_generation_tag(generation_id: str, request: TagUpdateRequest):
     if request.tag not in valid_tags:
         raise HTTPException(status_code=400, detail=f"Invalid tag. Must be one of: {valid_tags}")
     
-    success = update_tag(generation_id, request.tag)
+    success = await update_tag(generation_id, request.tag)
     if not success:
         raise HTTPException(status_code=404, detail="Generation not found")
     
@@ -554,7 +586,7 @@ These are NOT optional. They define the core visual identity of this batch."""
                             {"role": "user", "content": f"Enhance this image prompt:\n\n{clean_prompt}"}
                         ],
                         "temperature": 0.7,
-                        "max_tokens": 300
+                        "max_completion_tokens": 300
                     }
                 )
                 
@@ -576,7 +608,7 @@ These are NOT optional. They define the core visual identity of this batch."""
                 formatted_original = f"{prompt_number} {clean_prompt}" if prompt_number else clean_prompt
                 
                 # Save enhancement to database for export/tracking
-                save_prompt_enhancement(
+                await save_prompt_enhancement(
                     prompt_number=prompt_number,
                     original=clean_prompt,
                     enhanced=enhanced_text,
@@ -614,10 +646,11 @@ These are NOT optional. They define the core visual identity of this batch."""
 async def export_generations(
     tag: Optional[str] = Query(None, description="Filter by tag: accept, maybe, declined, untagged"),
     batch: Optional[str] = Query(None, description="Filter by batch_id"),
+    imp: Optional[str] = Query(None, description="Filter by Important Variant"),
     format: str = Query("zip", description="Export format: zip or csv")
 ):
     """Export generations with images and CSV index"""
-    records = export_gallery(tag_filter=tag, batch_filter=batch)
+    records = await export_gallery(tag_filter=tag, batch_filter=batch, imp_filter=imp)
     
     if not records:
         raise HTTPException(status_code=404, detail="No records found matching filters")
@@ -625,7 +658,7 @@ async def export_generations(
     # Enrich records with enhancement data if not already present
     for record in records:
         if record.get('prompt_number') and not record.get('enhanced_prompt'):
-            enhancement = get_enhancement_by_number(record['prompt_number'])
+            enhancement = await get_enhancement_by_number(record['prompt_number'])
             if enhancement:
                 record['original_prompt'] = enhancement.get('original_prompt')
                 record['enhanced_prompt'] = enhancement.get('enhanced_prompt')
@@ -652,11 +685,29 @@ async def export_generations(
     for record in records:
         if record.get('local_path') and os.path.exists(record['local_path']):
             # Copy image with meaningful filename
-            prompt_num = record.get('prompt_number') or 'unknown'
+            # Use prompt_number first, then fall back to parsed_number, then extract from prompt text
+            prompt_num = record.get('prompt_number') or record.get('parsed_number')
+            
+            # If still not found, try to extract from prompt text (format: "3155\t..." or "3155 ...")
+            if not prompt_num and record.get('prompt'):
+                import re
+                num_match = re.match(r'^(\d+)[\t\s]', record['prompt'])
+                if num_match:
+                    prompt_num = num_match.group(1)
+            
+            prompt_num = prompt_num or 'unknown'
             tag_str = record.get('tag') or 'untagged'
             seed = record.get('seed') or 'random'
+            imp = record.get('imp')
             ext = os.path.splitext(record['local_path'])[1]
-            new_name = f"{prompt_num}_{tag_str}_{seed}{ext}"
+            
+            # Construct filename: Number__imp=variant__tag_seed.ext
+            new_name_parts = [str(prompt_num)]
+            if imp:
+                new_name_parts.append(f"imp={imp}")
+            new_name_parts.append(f"{tag_str}_{seed}")
+            
+            new_name = f"{'__'.join(new_name_parts)}{ext}"
             shutil.copy2(record['local_path'], os.path.join(images_dir, new_name))
     
     # Create ZIP
