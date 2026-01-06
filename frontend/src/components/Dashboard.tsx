@@ -1006,6 +1006,58 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                         {isSubmitting ? <Loader2 className="animate-spin w-5 h-5" /> : <Play className="w-5 h-5 fill-current" />}
                         Start Batch
                     </button>
+
+                    {/* Cost Calculator Widget - Sidebar */}
+                    {costStats && (
+                        <div className="mt-8 border-t border-zinc-800 pt-6">
+                            <h3 className="text-zinc-400 text-sm font-medium mb-4 flex items-center gap-2">
+                                <span className="text-emerald-500">💰</span> Usage & Costs
+                                <span className="text-[10px] text-zinc-600 ml-auto bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">Dec 15+</span>
+                            </h3>
+
+                            <div className="grid grid-cols-2 gap-3 mb-5">
+                                <div className="bg-zinc-900/50 rounded-lg p-3 text-center border border-zinc-800">
+                                    <div className="text-2xl font-bold text-white mb-0.5">{costStats.total_images.toLocaleString()}</div>
+                                    <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">Images</div>
+                                </div>
+                                <div className="bg-zinc-900/50 rounded-lg p-3 text-center border border-zinc-800">
+                                    <div className="text-2xl font-bold text-emerald-400 mb-0.5">${costStats.total_cost_usd.toFixed(2)}</div>
+                                    <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-medium">Total Cost</div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-end pb-2 border-b border-zinc-800/50">
+                                    <span className="text-xs font-medium text-zinc-400">Daily Breakdown</span>
+                                    <span className="text-[10px] text-zinc-600 font-mono">$0.08 / img</span>
+                                </div>
+                                <div className="space-y-1 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                                    {costStats.breakdown.length === 0 ? (
+                                        <div className="text-xs text-zinc-600 text-center py-4 italic">No activity recorded yet</div>
+                                    ) : (
+                                        costStats.breakdown.slice(0, 10).map((day, idx) => (
+                                            <div key={idx} className="group flex justify-between items-center text-xs p-2 rounded hover:bg-zinc-800/40 transition-colors border border-transparent hover:border-zinc-800">
+                                                <span className="text-zinc-400 font-medium">{day.date}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">{day.count} img</span>
+                                                    <span className="font-mono text-emerald-500/80 group-hover:text-emerald-400 w-14 text-right font-medium">
+                                                        ${(day.count * 0.08).toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                                {costStats.breakdown.length > 10 && (
+                                    <div className="text-center pt-1">
+                                        <button className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors">
+                                            Show all history
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div >
 
@@ -1020,58 +1072,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                         </div>
 
                         {/* Cost Calculator Widget */}
-                        {costStats && (
-                            <div className="bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-md w-full shadow-xl">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
-                                        <span className="text-lg">💰</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-white font-semibold">Generation Cost Tracker</h3>
-                                        <p className="text-xs text-zinc-400">Since Dec 15, 2026</p>
-                                    </div>
-                                </div>
 
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-zinc-800/50 rounded-xl p-4 text-center">
-                                        <div className="text-3xl font-bold text-white mb-1">
-                                            {costStats.total_images.toLocaleString()}
-                                        </div>
-                                        <div className="text-xs text-zinc-400">Images Generated</div>
-                                    </div>
-                                    <div className="bg-zinc-800/50 rounded-xl p-4 text-center">
-                                        <div className="text-3xl font-bold text-emerald-400 mb-1">
-                                            ${costStats.total_cost_usd.toFixed(2)}
-                                        </div>
-                                        <div className="text-xs text-zinc-400">Total Cost</div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-between items-center text-xs text-zinc-500 border-t border-zinc-700 pt-3">
-                                    <span>{costStats.batches} batch{costStats.batches !== 1 ? 'es' : ''}</span>
-                                    <span className="flex items-center gap-1">
-                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        $0.08 per image
-                                    </span>
-                                </div>
-
-                                {costStats.breakdown && costStats.breakdown.length > 0 && (
-                                    <div className="mt-4 pt-4 border-t border-zinc-700">
-                                        <div className="text-xs text-zinc-400 mb-2">Recent Activity</div>
-                                        <div className="space-y-1 max-h-32 overflow-y-auto">
-                                            {costStats.breakdown.slice(0, 5).map((day, idx) => (
-                                                <div key={idx} className="flex justify-between text-xs">
-                                                    <span className="text-zinc-500">{day.date}</span>
-                                                    <span className="text-zinc-300">
-                                                        {day.count} images · <span className="text-emerald-400">${(day.count * 0.08).toFixed(2)}</span>
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
                     </div>
                 ) : (
                     <div className="max-w-5xl mx-auto">
