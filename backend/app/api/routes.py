@@ -731,15 +731,14 @@ async def get_user_info(apiKey: str):
         details = data['user_details'][0]
         
         # Log token details for debugging
-        print(f"[DEBUG] User Tokens: Subscription={details.get('subscriptionTokens')}, Paid={details.get('paidTokens')}, API={details.get('apiSubscriptionTokens')}")
+        print(f"[DEBUG] User Tokens: apiPaidTokens={details.get('apiPaidTokens')}, apiSubscriptionTokens={details.get('apiSubscriptionTokens')}, subscriptionTokens={details.get('subscriptionTokens')}")
         
-        # Calculate total available credits
-        # Prioritize standard subscription + paid tokens as this matches the web portal
-        subscription_tokens = details.get('subscriptionTokens', 0) or 0
-        paid_tokens = details.get('paidTokens', 0) or 0
-        # api_tokens = details.get('apiSubscriptionTokens', 0) or 0
+        # Calculate total available API credits
+        # API credits = apiPaidTokens + apiSubscriptionTokens (matches Leonardo portal)
+        api_paid_tokens = details.get('apiPaidTokens', 0) or 0
+        api_subscription_tokens = details.get('apiSubscriptionTokens', 0) or 0
         
-        total_credits = subscription_tokens + paid_tokens
+        total_credits = api_paid_tokens + api_subscription_tokens
         
         return {
             "id": details['user']['id'],
