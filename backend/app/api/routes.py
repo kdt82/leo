@@ -729,12 +729,22 @@ async def get_user_info(apiKey: str):
     try:
         data = await client.get_user_info()
         details = data['user_details'][0]
-        api_credits = details.get('apiSubscriptionTokens', 0) or 0
+        
+        # Log token details for debugging
+        print(f"[DEBUG] User Tokens: Subscription={details.get('subscriptionTokens')}, Paid={details.get('paidTokens')}, API={details.get('apiSubscriptionTokens')}")
+        
+        # Calculate total available credits
+        # Prioritize standard subscription + paid tokens as this matches the web portal
+        subscription_tokens = details.get('subscriptionTokens', 0) or 0
+        paid_tokens = details.get('paidTokens', 0) or 0
+        # api_tokens = details.get('apiSubscriptionTokens', 0) or 0
+        
+        total_credits = subscription_tokens + paid_tokens
         
         return {
             "id": details['user']['id'],
             "username": details['user']['username'],
-            "subscriptionTokens": api_credits,
+            "subscriptionTokens": total_credits,
             "subscriptionGptTokens": details.get('subscriptionGptTokens', 0) or 0,
             "subscriptionModelTokens": details.get('subscriptionModelTokens', 0) or 0
         }
