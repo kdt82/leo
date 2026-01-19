@@ -13,10 +13,10 @@ jobs:
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: leo.kylescoins.au
+          host: ${{ secrets.VPS_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
+          port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             cd /opt/apps/leo
             git pull origin main
