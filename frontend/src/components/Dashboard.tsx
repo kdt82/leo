@@ -50,7 +50,7 @@ export default function Dashboard({ apiKey, mode, onBatchComplete }: Props) {
 
 function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchComplete?: () => void }) {
     const [models, setModels] = useState<any[]>([]);
-    const [prompts, setPrompts] = useState('');
+    const [prompts, setPrompts] = useState('cinematic lighting, comic book hero style, dramatic, exciting, detailed, ');
     const [selectedModel, setSelectedModel] = useState('');
 
     // Custom Model / LoRA support
@@ -84,7 +84,9 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
         { label: "Holding a glowing seed", value: "holding_a_glowing_seed" },
         { label: "Cradling a glowing acorn", value: "cradling_a_glowing_acorn" },
         { label: "Raising a golden token", value: "raising_a_golden_token" },
-        { label: "Holding up a circular item", value: "holding_up_a_circular_item" }
+        { label: "Holding up a circular item", value: "holding_up_a_circular_item" },
+        { label: "Holding a chainsaw", value: "holding_a_chainsaw" },
+        { label: "Holding a battle axe", value: "holding_a_battle_axe" }
     ];
 
     // Advanced settings
@@ -94,7 +96,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
     const [scheduler, setScheduler] = useState('EULER_DISCRETE');
     const [alchemy, setAlchemy] = useState(false);  // AI enhancement
     const [enhancePrompt, setEnhancePrompt] = useState(false);  // Auto improve prompt
-    const [presetStyle, setPresetStyle] = useState('');  // Visual style preset
+    const [presetStyle, setPresetStyle] = useState('DYNAMIC');  // Visual style preset - default to Dynamic
     const [seed, setSeed] = useState<number | ''>('');  // Empty = random
 
     // Lightbox state
@@ -109,7 +111,14 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
         apiClient.get('/models', { params: { apiKey } })
             .then(res => {
                 setModels(res.data);
-                if (res.data.length > 0) setSelectedModel(res.data[0].id);
+                // Default to Flux.1 Kontext if available, otherwise first model
+                const fluxKontextId = '28aeddf8-bd19-4803-80fc-79602d1a9989';
+                const hasFluxKontext = res.data.some((m: any) => m.id === fluxKontextId);
+                if (hasFluxKontext) {
+                    setSelectedModel(fluxKontextId);
+                } else if (res.data.length > 0) {
+                    setSelectedModel(res.data[0].id);
+                }
             })
             .catch(console.error);
     }, [apiKey]);
@@ -1558,7 +1567,9 @@ function GalleryView() {
         { label: "Holding a glowing seed", value: "holding_a_glowing_seed" },
         { label: "Cradling a glowing acorn", value: "cradling_a_glowing_acorn" },
         { label: "Raising a golden token", value: "raising_a_golden_token" },
-        { label: "Holding up a circular item", value: "holding_up_a_circular_item" }
+        { label: "Holding up a circular item", value: "holding_up_a_circular_item" },
+        { label: "Holding a chainsaw", value: "holding_a_chainsaw" },
+        { label: "Holding a battle axe", value: "holding_a_battle_axe" }
     ];
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const pageSize = 50;
@@ -2132,7 +2143,7 @@ function GalleryView() {
 // Prompt Studio - Bulk upload and enhance prompts
 function PromptStudioView() {
     const [rawPrompts, setRawPrompts] = useState('');
-    const [stylePhrases, setStylePhrases] = useState('');
+    const [stylePhrases, setStylePhrases] = useState('cinematic lighting, comic book hero style, dramatic, exciting, detailed, ');
     const [enhancedResults, setEnhancedResults] = useState<any[]>([]);
     const [isEnhancing, setIsEnhancing] = useState(false);
     const [copiedIdx, setCopiedIdx] = useState<number | null>(null);

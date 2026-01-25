@@ -835,7 +835,12 @@ async def sync_generations(
         # Pattern: prompts that start with a number (your app's format: "4312 \"description...\"")
         prompt_pattern = re.compile(r'^\d+\s*["\[]')
         
+        # Date cutoff: Only sync generations from 26 Jan 2026 onwards (Australian time)
+        # Using 2026-01-25T13:00:00Z (UTC) which is 2026-01-26T00:00:00 AEDT (UTC+11)
+        date_cutoff = datetime.fromisoformat("2026-01-25T13:00:00+00:00")
+        
         print(f"[SYNC] Starting sync for user {user_id}. Will scan up to {max_scan_depth} generations for app-generated prompts.")
+        print(f"[SYNC] Date cutoff: Only importing generations from {date_cutoff.isoformat()} onwards")
         
         while scanned_count < max_scan_depth:
             current_batch_limit = batch_size
@@ -853,6 +858,18 @@ async def sync_generations(
                 scanned_count += 1
                 if gen.get('status') != 'COMPLETE': 
                     continue
+                
+                # Filter: Only import generations from the cutoff date onwards
+                created_str = gen.get('createdAt')
+                if created_str:
+                    try:
+                        # Leonardo API returns ISO format timestamps
+                        gen_date = datetime.fromisoformat(created_str.replace('Z', '+00:00'))
+                        if gen_date < date_cutoff:
+                            skipped_count += 1
+                            continue
+                    except (ValueError, TypeError):
+                        pass  # If date parsing fails, continue with other filters
                 
                 prompt = gen.get('prompt') or ""
                 

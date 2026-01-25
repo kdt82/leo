@@ -407,6 +407,10 @@ async def get_gallery(
         return _get_gallery_sqlite(sort_by, sort_order, tag_filter, batch_filter, imp_filter, limit, offset)
 
 
+# Date cutoff: Only show generations from 26 Jan 2026 onwards (Australian time)
+# Using 2026-01-25T13:00:00Z (UTC) which is 2026-01-26T00:00:00 AEDT (UTC+11)
+GALLERY_DATE_CUTOFF = '2026-01-25T13:00:00Z'
+
 async def _get_gallery_postgres(
     sort_by: str, sort_order: str, tag_filter: Optional[str],
     batch_filter: Optional[str], imp_filter: Optional[str],
@@ -416,7 +420,8 @@ async def _get_gallery_postgres(
     async with pool.acquire() as conn:
         # Build query with filters
         # Show all items in the database (they were either created by this app or synced and matched)
-        query = 'SELECT * FROM generations WHERE 1=1'
+        # Filter to only show generations from 26 Jan 2026 onwards
+        query = f"SELECT * FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
         params = []
         param_idx = 1
         
@@ -451,7 +456,7 @@ async def _get_gallery_postgres(
         rows = await conn.fetch(query, *params)
         
         # Get total count
-        count_query = 'SELECT COUNT(*) FROM generations WHERE 1=1'
+        count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
         count_params = []
         param_idx = 1
         if tag_filter:
@@ -497,8 +502,8 @@ def _get_gallery_sqlite(
     c = conn.cursor()
     
     # Build query with filters
-    # Show all items in the database
-    query = 'SELECT * FROM generations WHERE 1=1'
+    # Show all items in the database, filtered to 26 Jan 2026 onwards
+    query = f"SELECT * FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
     params = []
     
     if tag_filter:
@@ -530,7 +535,7 @@ def _get_gallery_sqlite(
     rows = c.fetchall()
     
     # Get total count
-    count_query = 'SELECT COUNT(*) FROM generations WHERE 1=1'
+    count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
     count_params = []
     if tag_filter:
         if tag_filter == 'untagged':
