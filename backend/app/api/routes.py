@@ -1044,6 +1044,7 @@ async def get_cost_stats(
     return {
         "since": since,
         "total_images": total_images,
+        "accepted_images": stats.get("accepted_images", 0),
         "cost_per_image": cost_per_image,
         "total_cost_usd": round(total_cost, 2),
         "batches": stats.get("batch_count", 0),

@@ -9,6 +9,21 @@ interface Props {
     onBatchComplete?: () => void;
 }
 
+// Helper function to extract image number from prompt or prompt_number field
+function getImageNumber(item: any): string | null {
+    // First check if prompt_number is set
+    if (item.prompt_number) {
+        return String(item.prompt_number).padStart(4, '0');
+    }
+    // Otherwise try to extract from the start of the prompt
+    const prompt = item.prompt || item.original_prompt || '';
+    const match = prompt.match(/^(\d{1,5})\s/);
+    if (match) {
+        return match[1].padStart(4, '0');
+    }
+    return null;
+}
+
 // Info Tooltip component
 function InfoTip({ text }: { text: string }) {
     const [show, setShow] = useState(false);
@@ -1345,9 +1360,9 @@ function ResultsView() {
                             </button>
 
                             {/* Image Number Badge */}
-                            {selectedImage.prompt_number && (
+                            {getImageNumber(selectedImage) && (
                                 <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg z-10">
-                                    #{String(selectedImage.prompt_number).padStart(4, '0')}
+                                    #{getImageNumber(selectedImage)}
                                 </div>
                             )}
                             {/* Current Tag Badge */}
@@ -1375,9 +1390,9 @@ function ResultsView() {
                             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                                 <Sparkles className="w-5 h-5 text-indigo-400" />
                                 Image Details
-                                {selectedImage.prompt_number && (
+                                {getImageNumber(selectedImage) && (
                                     <span className="ml-auto text-sm font-mono bg-indigo-600/20 text-indigo-400 px-2 py-0.5 rounded">
-                                        #{String(selectedImage.prompt_number).padStart(4, '0')}
+                                        #{getImageNumber(selectedImage)}
                                     </span>
                                 )}
                             </h3>
@@ -1480,10 +1495,10 @@ function ResultsView() {
 
                             {/* Metadata Grid */}
                             <div className="grid grid-cols-2 gap-3 mb-6">
-                                {selectedImage.prompt_number && (
+                                {getImageNumber(selectedImage) && (
                                     <div className="bg-indigo-900/30 border border-indigo-800/50 rounded-lg p-3">
                                         <label className="text-[10px] text-indigo-400 uppercase tracking-wider block mb-1">Image #</label>
-                                        <span className="text-sm font-mono font-bold text-indigo-300">{String(selectedImage.prompt_number).padStart(4, '0')}</span>
+                                        <span className="text-sm font-mono font-bold text-indigo-300">{getImageNumber(selectedImage)}</span>
                                     </div>
                                 )}
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
@@ -1902,9 +1917,9 @@ function GalleryView() {
                             </div>
 
                             {/* Image Number Badge */}
-                            {item.prompt_number && (
+                            {getImageNumber(item) && (
                                 <div className="absolute top-1 left-1 bg-indigo-600/90 text-white px-1.5 py-0.5 rounded text-xs font-mono font-bold">
-                                    #{String(item.prompt_number).padStart(4, '0')}
+                                    #{getImageNumber(item)}
                                 </div>
                             )}
 
@@ -2025,9 +2040,9 @@ function GalleryView() {
                             >
                                 <ChevronRight className="w-8 h-8" />
                             </button>
-                            {selectedImage.prompt_number && (
+                            {getImageNumber(selectedImage) && (
                                 <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg">
-                                    #{String(selectedImage.prompt_number).padStart(4, '0')}
+                                    #{getImageNumber(selectedImage)}
                                 </div>
                             )}
                             {selectedImage.tag && (
@@ -2118,10 +2133,10 @@ function GalleryView() {
 
                             {/* Metadata */}
                             <div className="grid grid-cols-2 gap-3 mb-6">
-                                {selectedImage.prompt_number && (
+                                {getImageNumber(selectedImage) && (
                                     <div className="bg-indigo-900/30 border border-indigo-800/50 rounded-lg p-3">
                                         <label className="text-[10px] text-indigo-400 uppercase block mb-1">Image #</label>
-                                        <span className="text-sm font-mono font-bold text-indigo-300">{String(selectedImage.prompt_number).padStart(4, '0')}</span>
+                                        <span className="text-sm font-mono font-bold text-indigo-300">{getImageNumber(selectedImage)}</span>
                                     </div>
                                 )}
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
@@ -2743,10 +2758,11 @@ function ClassifierView() {
 function CostView() {
     const [costStats, setCostStats] = useState<{
         total_images: number;
+        accepted_images: number;
         total_cost_usd: number;
         batches: number;
         since: string;
-        breakdown: Array<{ date: string; count: number }>;
+        breakdown: Array<{ date: string; count: number; accepted: number }>;
     } | null>(null);
 
     useEffect(() => {
@@ -2760,6 +2776,12 @@ function CostView() {
             <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
         </div>
     );
+
+    // Format date for display
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    };
 
     return (
         <div className="h-full overflow-y-auto bg-background p-8">
@@ -2777,12 +2799,18 @@ function CostView() {
                 </header>
 
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Images Generated</div>
+                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Generated</div>
                         <div className="text-3xl font-bold text-white">{costStats.total_images.toLocaleString()}</div>
+                        <div className="text-xs text-zinc-500 mt-1">images created</div>
                     </div>
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+                    <div className="bg-zinc-900/50 border border-green-800/50 rounded-xl p-6">
+                        <div className="text-zinc-400 text-sm font-medium mb-2">Accepted</div>
+                        <div className="text-3xl font-bold text-green-400">{costStats.accepted_images.toLocaleString()}</div>
+                        <div className="text-xs text-zinc-500 mt-1">images kept</div>
+                    </div>
+                    <div className="bg-zinc-900/50 border border-emerald-800/50 rounded-xl p-6">
                         <div className="text-zinc-400 text-sm font-medium mb-2">Total Cost (USD)</div>
                         <div className="text-3xl font-bold text-emerald-400">${costStats.total_cost_usd.toFixed(2)}</div>
                         <div className="text-xs text-zinc-500 mt-1">@ $0.10 per image</div>
@@ -2790,61 +2818,69 @@ function CostView() {
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
                         <div className="text-zinc-400 text-sm font-medium mb-2">Total Batches</div>
                         <div className="text-3xl font-bold text-indigo-400">{costStats.batches.toLocaleString()}</div>
+                        <div className="text-xs text-zinc-500 mt-1">generation runs</div>
                     </div>
                 </div>
 
-                {/* Detailed Table */}
-                <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
-                    <div className="px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
-                        <h3 className="font-semibold text-zinc-200 flex items-center gap-2">
-                            <FileSpreadsheet className="w-4 h-4 text-zinc-500" />
-                            Daily Breakdown
-                        </h3>
-                        {/* Placeholder for export if needed */}
-                        {/* <button className="text-xs text-indigo-400 hover:text-indigo-300">Export CSV</button> */}
+                {/* Daily Breakdown Cards */}
+                <h3 className="font-semibold text-zinc-200 flex items-center gap-2 mb-4">
+                    <FileSpreadsheet className="w-4 h-4 text-zinc-500" />
+                    Daily Breakdown
+                </h3>
+                
+                {costStats.breakdown.length === 0 ? (
+                    <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500 italic">
+                        No generation history found for this period.
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-zinc-500 uppercase bg-zinc-950/50 border-b border-zinc-800">
-                                <tr>
-                                    <th className="px-6 py-3 font-medium">Date</th>
-                                    <th className="px-6 py-3 font-medium text-right">Images</th>
-                                    <th className="px-6 py-3 font-medium text-right">Cost (USD)</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-zinc-800/50">
-                                {costStats.breakdown.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={3} className="px-6 py-12 text-center text-zinc-500 italic">
-                                            No generation history found for this period.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    costStats.breakdown.map((item, i) => (
-                                        <tr key={i} className="hover:bg-zinc-800/30 transition-colors">
-                                            <td className="px-6 py-4 text-zinc-300 font-mono">{item.date}</td>
-                                            <td className="px-6 py-4 text-zinc-300 text-right font-mono">{item.count}</td>
-                                            <td className="px-6 py-4 text-emerald-400 text-right font-mono font-medium">
-                                                ${(item.count * 0.10).toFixed(2)}
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                            {costStats.breakdown.length > 0 && (
-                                <tfoot className="bg-zinc-900/80 font-medium text-zinc-200 border-t border-zinc-800">
-                                    <tr>
-                                        <td className="px-6 py-4">Total</td>
-                                        <td className="px-6 py-4 text-right font-mono">{costStats.total_images.toLocaleString()}</td>
-                                        <td className="px-6 py-4 text-right font-mono text-emerald-400">
-                                            ${costStats.total_cost_usd.toFixed(2)}
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            )}
-                        </table>
+                ) : (
+                    <div className="space-y-4">
+                        {costStats.breakdown.map((item, i) => (
+                            <div key={i} className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-colors">
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                    <div>
+                                        <div className="text-lg font-semibold text-white">{formatDate(item.date)}</div>
+                                        <div className="text-sm text-zinc-500">{item.date}</div>
+                                    </div>
+                                    <div className="flex gap-6 md:gap-12">
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold text-white">{item.count}</div>
+                                            <div className="text-xs text-zinc-500 uppercase">Generated</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold text-green-400">{item.accepted}</div>
+                                            <div className="text-xs text-zinc-500 uppercase">Accepted</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-2xl font-bold text-emerald-400">${(item.count * 0.10).toFixed(2)}</div>
+                                            <div className="text-xs text-zinc-500 uppercase">Cost</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        
+                        {/* Total Row */}
+                        <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div className="text-lg font-bold text-white">Total</div>
+                                <div className="flex gap-6 md:gap-12">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-white">{costStats.total_images}</div>
+                                        <div className="text-xs text-zinc-500 uppercase">Generated</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-400">{costStats.accepted_images}</div>
+                                        <div className="text-xs text-zinc-500 uppercase">Accepted</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-emerald-400">${costStats.total_cost_usd.toFixed(2)}</div>
+                                        <div className="text-xs text-zinc-500 uppercase">Cost</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
