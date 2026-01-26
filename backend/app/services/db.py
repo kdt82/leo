@@ -409,7 +409,7 @@ async def get_gallery(
 
 # Date cutoff: Only show generations from 26 Jan 2026 onwards (Australian time)
 # Using 2026-01-25T13:00:00Z (UTC) which is 2026-01-26T00:00:00 AEDT (UTC+11)
-GALLERY_DATE_CUTOFF = '2026-01-25T13:00:00Z'
+GALLERY_DATE_CUTOFF = '2026-01-25 13:00:00'
 
 async def _get_gallery_postgres(
     sort_by: str, sort_order: str, tag_filter: Optional[str],
@@ -421,7 +421,7 @@ async def _get_gallery_postgres(
         # Build query with filters
         # Show all items in the database (they were either created by this app or synced and matched)
         # Filter to only show generations from 26 Jan 2026 onwards
-        query = f"SELECT * FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
+        query = f"SELECT * FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}'"
         params = []
         param_idx = 1
         
@@ -456,7 +456,7 @@ async def _get_gallery_postgres(
         rows = await conn.fetch(query, *params)
         
         # Get total count
-        count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}'"
+        count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}'"
         count_params = []
         param_idx = 1
         if tag_filter:
