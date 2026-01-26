@@ -312,6 +312,38 @@ def _update_tag_sqlite(generation_id: str, tag: str) -> bool:
 
 
 # ============================================================
+# DELETE OPERATIONS
+# ============================================================
+
+async def delete_generation(generation_id: str) -> bool:
+    """Delete a generation from the database."""
+    if settings.USE_POSTGRES:
+        return await _delete_generation_postgres(generation_id)
+    else:
+        return _delete_generation_sqlite(generation_id)
+
+
+async def _delete_generation_postgres(generation_id: str) -> bool:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        result = await conn.execute(
+            'DELETE FROM generations WHERE id = $1', 
+            generation_id
+        )
+        return 'DELETE 1' in result
+
+
+def _delete_generation_sqlite(generation_id: str) -> bool:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM generations WHERE id = ?', (generation_id,))
+    deleted = c.rowcount > 0
+    conn.commit()
+    conn.close()
+    return deleted
+
+
+# ============================================================
 # PROMPT ENHANCEMENTS
 # ============================================================
 

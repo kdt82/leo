@@ -385,6 +385,17 @@ async def set_generation_tag(generation_id: str, request: TagUpdateRequest):
     
     return {"success": True, "generation_id": generation_id, "tag": request.tag}
 
+@router.delete("/generations/{generation_id}")
+async def delete_generation(generation_id: str):
+    """Delete a generation from the database"""
+    from app.services.db import delete_generation as db_delete_generation
+    
+    success = await db_delete_generation(generation_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Generation not found")
+    
+    return {"success": True, "generation_id": generation_id}
+
 @router.post("/enhance-prompts")
 async def enhance_prompts(request: PromptEnhanceRequest):
     """

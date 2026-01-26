@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, Receipt } from 'lucide-react';
+import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, Receipt, Trash2 } from 'lucide-react';
 import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey, API_URL } from '../api/client';
 import clsx from 'clsx';
 
@@ -333,7 +333,7 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
 
             const checkCompletion = setInterval(async () => {
                 try {
-                    const statusRes = await apiClient.get(`/ jobs / ${res.data.batchId} `);
+                    const statusRes = await apiClient.get(`/jobs/${res.data.batchId}`);
                     const s = statusRes.data;
                     setJobStatus(s);
                     if (s.completed + s.failed === s.total) {
@@ -1677,6 +1677,24 @@ function GalleryView() {
         }
     };
 
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this image?')) return;
+        try {
+            await apiClient.delete(`/generations/${id}`);
+            setGallery((prev: any) => ({
+                ...prev,
+                items: prev.items.filter((item: any) => item.id !== id),
+                total: prev.total - 1
+            }));
+            if (selectedImage?.id === id) {
+                setSelectedImage(null);
+            }
+        } catch (e) {
+            console.error('Failed to delete:', e);
+            alert('Failed to delete image');
+        }
+    };
+
     const totalPages = Math.ceil(gallery.total / pageSize);
 
     if (loading && gallery.items.length === 0) {
@@ -1933,6 +1951,13 @@ function GalleryView() {
                                         )}
                                     >
                                         <span className="text-white text-xs">✗</span>
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                                        className="p-1.5 rounded transition-colors bg-zinc-800/50 hover:bg-red-700"
+                                        title="Delete image"
+                                    >
+                                        <Trash2 className="w-3 h-3 text-white" />
                                     </button>
                                 </div>
                                 <span className="text-[10px] text-zinc-400 truncate max-w-full px-1">
