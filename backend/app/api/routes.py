@@ -1022,8 +1022,8 @@ async def download_batch_zip(batch_id: str):
 
 @router.get("/cost-stats")
 async def get_cost_stats(
-    since: str = Query("2026-12-15", description="Start date (YYYY-MM-DD) for cost calculation"),
-    cost_per_image: float = Query(0.08, description="Cost per image in USD")
+    since: str = Query("2026-01-26", description="Start date (YYYY-MM-DD) for cost calculation"),
+    cost_per_image: float = Query(0.10, description="Cost per image in USD")
 ):
     """
     Get cost statistics for generations since a specified date.

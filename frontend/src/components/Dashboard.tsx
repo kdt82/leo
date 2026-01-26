@@ -673,14 +673,14 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                         const pixelMultiplier = Math.max(0.5, Math.min(4, pixelCount / basePixels));
                         const tokensPerImage = Math.round(24 * pixelMultiplier);
                         const estimatedCost = totalImages * tokensPerImage;
-                        // Pricing: $0.08 per image internal cost
+                        // Pricing: $0.10 per image internal cost
                         return promptCount > 0 ? (
                             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 space-y-3">
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-zinc-400">Estimated Cost</span>
                                     <div className="text-right">
                                         <div className="text-xl font-bold text-yellow-400">{estimatedCost.toLocaleString()} tokens</div>
-                                        <div className="text-lg font-bold text-emerald-400">${(totalImages * 0.08).toFixed(2)} (@ 0.08)</div>
+                                        <div className="text-lg font-bold text-emerald-400">${(totalImages * 0.10).toFixed(2)} (@ $0.10)</div>
                                     </div>
                                 </div>
                                 <div className="text-xs text-zinc-500 space-y-1 border-t border-zinc-800 pt-2">
@@ -1344,10 +1344,10 @@ function ResultsView() {
                                 <ChevronRight className="w-8 h-8" />
                             </button>
 
-                            {/* Prompt Number Badge */}
+                            {/* Image Number Badge */}
                             {selectedImage.prompt_number && (
                                 <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg z-10">
-                                    #{selectedImage.prompt_number}
+                                    #{String(selectedImage.prompt_number).padStart(4, '0')}
                                 </div>
                             )}
                             {/* Current Tag Badge */}
@@ -1377,7 +1377,7 @@ function ResultsView() {
                                 Image Details
                                 {selectedImage.prompt_number && (
                                     <span className="ml-auto text-sm font-mono bg-indigo-600/20 text-indigo-400 px-2 py-0.5 rounded">
-                                        #{selectedImage.prompt_number}
+                                        #{String(selectedImage.prompt_number).padStart(4, '0')}
                                     </span>
                                 )}
                             </h3>
@@ -1482,21 +1482,21 @@ function ResultsView() {
                             <div className="grid grid-cols-2 gap-3 mb-6">
                                 {selectedImage.prompt_number && (
                                     <div className="bg-indigo-900/30 border border-indigo-800/50 rounded-lg p-3">
-                                        <label className="text-[10px] text-indigo-400 uppercase tracking-wider block mb-1">Prompt #</label>
-                                        <span className="text-sm font-mono font-bold text-indigo-300">{selectedImage.prompt_number}</span>
+                                        <label className="text-[10px] text-indigo-400 uppercase tracking-wider block mb-1">Image #</label>
+                                        <span className="text-sm font-mono font-bold text-indigo-300">{String(selectedImage.prompt_number).padStart(4, '0')}</span>
                                     </div>
                                 )}
-                                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-                                    <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Dimensions</label>
-                                    <span className="text-sm font-medium text-white">{selectedImage.width}×{selectedImage.height}</span>
-                                </div>
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
                                     <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Seed</label>
                                     <span className="text-sm font-mono text-white">{selectedImage.seed || 'Random'}</span>
                                 </div>
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
-                                    <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Batch ID</label>
+                                    <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Batch</label>
                                     <span className="text-sm font-mono text-indigo-400">{selectedImage.batch_id?.slice(0, 8) || 'N/A'}</span>
+                                </div>
+                                <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
+                                    <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Size</label>
+                                    <span className="text-sm font-medium text-white">{selectedImage.width}×{selectedImage.height}</span>
                                 </div>
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
                                     <label className="text-[10px] text-zinc-500 uppercase tracking-wider block mb-1">Created</label>
@@ -1901,10 +1901,10 @@ function GalleryView() {
                                 />
                             </div>
 
-                            {/* Prompt Number Badge */}
+                            {/* Image Number Badge */}
                             {item.prompt_number && (
                                 <div className="absolute top-1 left-1 bg-indigo-600/90 text-white px-1.5 py-0.5 rounded text-xs font-mono font-bold">
-                                    #{item.prompt_number}
+                                    #{String(item.prompt_number).padStart(4, '0')}
                                 </div>
                             )}
 
@@ -2027,7 +2027,7 @@ function GalleryView() {
                             </button>
                             {selectedImage.prompt_number && (
                                 <div className="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-mono text-sm font-bold shadow-lg">
-                                    #{selectedImage.prompt_number}
+                                    #{String(selectedImage.prompt_number).padStart(4, '0')}
                                 </div>
                             )}
                             {selectedImage.tag && (
@@ -2120,8 +2120,8 @@ function GalleryView() {
                             <div className="grid grid-cols-2 gap-3 mb-6">
                                 {selectedImage.prompt_number && (
                                     <div className="bg-indigo-900/30 border border-indigo-800/50 rounded-lg p-3">
-                                        <label className="text-[10px] text-indigo-400 uppercase block mb-1">Prompt #</label>
-                                        <span className="text-sm font-mono font-bold text-indigo-300">{selectedImage.prompt_number}</span>
+                                        <label className="text-[10px] text-indigo-400 uppercase block mb-1">Image #</label>
+                                        <span className="text-sm font-mono font-bold text-indigo-300">{String(selectedImage.prompt_number).padStart(4, '0')}</span>
                                     </div>
                                 )}
                                 <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3">
@@ -2750,7 +2750,7 @@ function CostView() {
     } | null>(null);
 
     useEffect(() => {
-        apiClient.get('/cost-stats', { params: { since: '2026-12-15', cost_per_image: 0.08 } })
+        apiClient.get('/cost-stats', { params: { since: '2026-01-26', cost_per_image: 0.10 } })
             .then(res => setCostStats(res.data))
             .catch(console.error);
     }, []);
@@ -2785,7 +2785,7 @@ function CostView() {
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
                         <div className="text-zinc-400 text-sm font-medium mb-2">Total Cost (USD)</div>
                         <div className="text-3xl font-bold text-emerald-400">${costStats.total_cost_usd.toFixed(2)}</div>
-                        <div className="text-xs text-zinc-500 mt-1">@ $0.08 per image</div>
+                        <div className="text-xs text-zinc-500 mt-1">@ $0.10 per image</div>
                     </div>
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
                         <div className="text-zinc-400 text-sm font-medium mb-2">Total Batches</div>
@@ -2825,7 +2825,7 @@ function CostView() {
                                             <td className="px-6 py-4 text-zinc-300 font-mono">{item.date}</td>
                                             <td className="px-6 py-4 text-zinc-300 text-right font-mono">{item.count}</td>
                                             <td className="px-6 py-4 text-emerald-400 text-right font-mono font-medium">
-                                                ${(item.count * 0.08).toFixed(2)}
+                                                ${(item.count * 0.10).toFixed(2)}
                                             </td>
                                         </tr>
                                     ))
