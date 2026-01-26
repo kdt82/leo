@@ -20,6 +20,6 @@ jobs:
           script: |
             cd /opt/apps/leo
             git pull origin main
-            docker compose build --no-cache frontend
+            docker compose build --no-cache frontend backend
             docker compose up -d
             echo "Deployment completed at $(date)"
