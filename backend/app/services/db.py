@@ -98,6 +98,26 @@ async def _init_postgres():
         except Exception:
             pass  # Column already exists
 
+        # Add finalized_at column for "Export as Finals" archiving
+        try:
+            await conn.execute('ALTER TABLE generations ADD COLUMN finalized_at TIMESTAMP')
+        except Exception:
+            pass
+
+        # Create archive_periods table to track finalized batches
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS archive_periods (
+                id SERIAL PRIMARY KEY,
+                label TEXT,
+                from_date TIMESTAMP,
+                to_date TIMESTAMP,
+                total_generated INTEGER,
+                total_accepted INTEGER,
+                total_cost_usd REAL,
+                archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        '''
+
 
 def _init_sqlite():
     """Initialize SQLite database (existing logic)."""
@@ -138,12 +158,27 @@ def _init_sqlite():
         ('original_prompt', 'TEXT'),
         ('enhanced_prompt', 'TEXT'),
         ('deleted_at', 'TIMESTAMP'),  # Soft-delete for billing tracking
+        ('finalized_at', 'TIMESTAMP'),  # Set when batch is exported as Finals
     ]:
         try:
             c.execute(f'ALTER TABLE generations ADD COLUMN {col} {col_type}')
         except sqlite3.OperationalError:
             pass
-    
+
+    # Create archive_periods table for finalized batch records
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS archive_periods (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            label TEXT,
+            from_date TEXT,
+            to_date TEXT,
+            total_generated INTEGER,
+            total_accepted INTEGER,
+            total_cost_usd REAL,
+            archived_at TEXT DEFAULT (datetime('now'))
+        )
+    ''')
+
     # Create prompt_enhancements table
     c.execute('''
         CREATE TABLE IF NOT EXISTS prompt_enhancements (
@@ -352,6 +387,90 @@ def _delete_generation_sqlite(generation_id: str) -> bool:
 
 
 # ============================================================
+# FINALIZE / ARCHIVE OPERATIONS
+# ============================================================
+
+async def finalize_generations() -> Dict[str, Any]:
+    """Archive all non-finalized, non-deleted generations (the current active batch).
+    Creates an archive_period record summarizing the batch.
+    Returns stats about what was archived."""
+    if settings.USE_POSTGRES:
+        return await _finalize_generations_postgres()
+    else:
+        return _finalize_generations_sqlite()
+
+
+async def _finalize_generations_postgres() -> Dict[str, Any]:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            'SELECT COUNT(*) as total, MIN(created_at) as from_date, MAX(created_at) as to_date '
+            'FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL'
+        )
+        total, from_date, to_date = row['total'] or 0, row['from_date'], row['to_date']
+
+        if not total:
+            return {"success": False, "message": "Nothing to archive"}
+
+        accepted = await conn.fetchval(
+            "SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL AND tag = 'accept'"
+        )
+        label_num = (await conn.fetchval('SELECT COUNT(*) FROM archive_periods') or 0) + 1
+        label = f"Finals #{label_num}"
+        total_cost = round(total * 0.10, 2)
+
+        await conn.execute(
+            'INSERT INTO archive_periods (label, from_date, to_date, total_generated, total_accepted, total_cost_usd) '
+            'VALUES ($1, $2, $3, $4, $5, $6)',
+            label, from_date, to_date, total, accepted, total_cost
+        )
+        await conn.execute(
+            'UPDATE generations SET finalized_at = CURRENT_TIMESTAMP WHERE finalized_at IS NULL AND deleted_at IS NULL'
+        )
+        return {"success": True, "label": label, "total_archived": total,
+                "accepted_archived": accepted, "total_cost_usd": total_cost}
+
+
+def _finalize_generations_sqlite() -> Dict[str, Any]:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    c.execute(
+        'SELECT COUNT(*), MIN(created_at), MAX(created_at) FROM generations '
+        'WHERE finalized_at IS NULL AND deleted_at IS NULL'
+    )
+    row = c.fetchone()
+    total, from_date, to_date = row[0] or 0, row[1], row[2]
+
+    if not total:
+        conn.close()
+        return {"success": False, "message": "Nothing to archive"}
+
+    c.execute(
+        "SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL AND tag = 'accept'"
+    )
+    accepted = c.fetchone()[0] or 0
+
+    c.execute('SELECT COUNT(*) FROM archive_periods')
+    label_num = (c.fetchone()[0] or 0) + 1
+    label = f"Finals #{label_num}"
+    total_cost = round(total * 0.10, 2)
+
+    c.execute(
+        'INSERT INTO archive_periods (label, from_date, to_date, total_generated, total_accepted, total_cost_usd) '
+        'VALUES (?, ?, ?, ?, ?, ?)',
+        (label, from_date, to_date, total, accepted, total_cost)
+    )
+    c.execute(
+        "UPDATE generations SET finalized_at = datetime('now') WHERE finalized_at IS NULL AND deleted_at IS NULL"
+    )
+    conn.commit()
+    conn.close()
+    return {"success": True, "label": label, "total_archived": total,
+            "accepted_archived": accepted, "total_cost_usd": total_cost}
+
+
+# ============================================================
 # PROMPT ENHANCEMENTS
 # ============================================================
 
@@ -437,14 +556,15 @@ async def get_gallery(
     tag_filter: Optional[str] = None,
     batch_filter: Optional[str] = None,
     imp_filter: Optional[str] = None,
+    show_archive: bool = False,
     limit: int = 100,
     offset: int = 0
 ) -> Dict[str, Any]:
     """Get gallery view with sorting and filtering."""
     if settings.USE_POSTGRES:
-        return await _get_gallery_postgres(sort_by, sort_order, tag_filter, batch_filter, imp_filter, limit, offset)
+        return await _get_gallery_postgres(sort_by, sort_order, tag_filter, batch_filter, imp_filter, show_archive, limit, offset)
     else:
-        return _get_gallery_sqlite(sort_by, sort_order, tag_filter, batch_filter, imp_filter, limit, offset)
+        return _get_gallery_sqlite(sort_by, sort_order, tag_filter, batch_filter, imp_filter, show_archive, limit, offset)
 
 
 # Date cutoff: Only show generations from 26 Jan 2026 onwards (Australian time)
@@ -454,6 +574,7 @@ GALLERY_DATE_CUTOFF = '2026-01-25 13:00:00'
 async def _get_gallery_postgres(
     sort_by: str, sort_order: str, tag_filter: Optional[str],
     batch_filter: Optional[str], imp_filter: Optional[str],
+    show_archive: bool,
     limit: int, offset: int
 ) -> Dict[str, Any]:
     pool = await get_pool()
@@ -462,7 +583,8 @@ async def _get_gallery_postgres(
         # Show all items in the database (they were either created by this app or synced and matched)
         # Filter to only show generations from 26 Jan 2026 onwards
         # Exclude soft-deleted records (deleted_at IS NULL)
-        query = f"SELECT * FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL"
+        archive_filter = "" if show_archive else " AND finalized_at IS NULL"
+        query = f"SELECT * FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL{archive_filter}"
         params = []
         param_idx = 1
         
@@ -497,7 +619,7 @@ async def _get_gallery_postgres(
         rows = await conn.fetch(query, *params)
         
         # Get total count (excluding soft-deleted)
-        count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL"
+        count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL{archive_filter}"
         count_params = []
         param_idx = 1
         if tag_filter:
@@ -518,11 +640,11 @@ async def _get_gallery_postgres(
         total = await conn.fetchval(count_query, *count_params)
         
         # Get unique batches
-        batches_rows = await conn.fetch('SELECT DISTINCT batch_id FROM generations WHERE deleted_at IS NULL ORDER BY batch_id DESC')
+        batches_rows = await conn.fetch(f'SELECT DISTINCT batch_id FROM generations WHERE deleted_at IS NULL{archive_filter} ORDER BY batch_id DESC')
         batches = [row['batch_id'] for row in batches_rows if row['batch_id']]
         
         # Get tag counts
-        tag_rows = await conn.fetch('SELECT tag, COUNT(*) as count FROM generations GROUP BY tag')
+        tag_rows = await conn.fetch(f'SELECT tag, COUNT(*) as count FROM generations WHERE deleted_at IS NULL{archive_filter} GROUP BY tag')
         tag_counts = {row['tag'] or 'untagged': row['count'] for row in tag_rows}
         
         return {
@@ -536,6 +658,7 @@ async def _get_gallery_postgres(
 def _get_gallery_sqlite(
     sort_by: str, sort_order: str, tag_filter: Optional[str],
     batch_filter: Optional[str], imp_filter: Optional[str],
+    show_archive: bool,
     limit: int, offset: int
 ) -> Dict[str, Any]:
     conn = sqlite3.connect(DB_PATH)
@@ -545,7 +668,8 @@ def _get_gallery_sqlite(
     # Build query with filters
     # Show all items in the database, filtered to 26 Jan 2026 onwards
     # Exclude soft-deleted records (deleted_at IS NULL)
-    query = f"SELECT * FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL"
+    archive_filter = "" if show_archive else " AND finalized_at IS NULL"
+    query = f"SELECT * FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL{archive_filter}"
     params = []
     
     if tag_filter:
@@ -577,7 +701,7 @@ def _get_gallery_sqlite(
     rows = c.fetchall()
     
     # Get total count (excluding soft-deleted)
-    count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL"
+    count_query = f"SELECT COUNT(*) FROM generations WHERE created_at >= '{GALLERY_DATE_CUTOFF}' AND deleted_at IS NULL{archive_filter}"
     count_params = []
     if tag_filter:
         if tag_filter == 'untagged':
@@ -596,11 +720,11 @@ def _get_gallery_sqlite(
     total = c.fetchone()[0]
     
     # Get unique batches (excluding soft-deleted)
-    c.execute('SELECT DISTINCT batch_id FROM generations WHERE deleted_at IS NULL ORDER BY created_at DESC')
+    c.execute(f'SELECT DISTINCT batch_id FROM generations WHERE deleted_at IS NULL{archive_filter} ORDER BY created_at DESC')
     batches = [row[0] for row in c.fetchall() if row[0]]
     
     # Get tag counts (excluding soft-deleted)
-    c.execute('SELECT tag, COUNT(*) as count FROM generations WHERE deleted_at IS NULL GROUP BY tag')
+    c.execute(f'SELECT tag, COUNT(*) as count FROM generations WHERE deleted_at IS NULL{archive_filter} GROUP BY tag')
     tag_counts = {row[0] or 'untagged': row[1] for row in c.fetchall()}
     
     conn.close()
@@ -622,7 +746,7 @@ async def export_gallery(
     if settings.USE_POSTGRES:
         pool = await get_pool()
         async with pool.acquire() as conn:
-            query = 'SELECT * FROM generations WHERE 1=1'
+            query = 'SELECT * FROM generations WHERE finalized_at IS NULL'
             params = []
             param_idx = 1
             
@@ -652,7 +776,7 @@ async def export_gallery(
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
         
-        query = 'SELECT * FROM generations WHERE 1=1'
+        query = 'SELECT * FROM generations WHERE finalized_at IS NULL'
         params = []
         
         if tag_filter:
@@ -740,94 +864,104 @@ async def get_cost_statistics(since_date: datetime) -> Dict[str, Any]:
 async def _get_cost_statistics_postgres(since_date: datetime) -> Dict[str, Any]:
     pool = await get_pool()
     async with pool.acquire() as conn:
-        # Get total count (ALL generations, including soft-deleted for billing)
+        # Active stats (non-finalized only)
         total = await conn.fetchval(
-            'SELECT COUNT(*) FROM generations WHERE created_at >= $1',
+            'SELECT COUNT(*) FROM generations WHERE created_at >= $1 AND finalized_at IS NULL',
             since_date
         )
-        
-        # Get accepted count (only non-deleted with tag='accept')
         accepted = await conn.fetchval(
-            "SELECT COUNT(*) FROM generations WHERE created_at >= $1 AND tag = 'accept' AND deleted_at IS NULL",
+            "SELECT COUNT(*) FROM generations WHERE created_at >= $1 AND tag = 'accept' AND deleted_at IS NULL AND finalized_at IS NULL",
             since_date
         )
-        
-        # Get batch count
         batch_count = await conn.fetchval(
-            'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= $1 AND batch_id IS NOT NULL',
+            'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= $1 AND batch_id IS NOT NULL AND finalized_at IS NULL',
             since_date
         )
-        
-        # Get daily breakdown (ALL generations for billing)
         breakdown_rows = await conn.fetch('''
             SELECT 
                 DATE(created_at) as date,
                 COUNT(*) as count,
                 COUNT(*) FILTER (WHERE tag = 'accept' AND deleted_at IS NULL) as accepted
             FROM generations 
-            WHERE created_at >= $1
+            WHERE created_at >= $1 AND finalized_at IS NULL
             GROUP BY DATE(created_at)
             ORDER BY date DESC
             LIMIT 30
         ''', since_date)
-        
         breakdown = [
             {"date": str(row['date']), "count": row['count'], "accepted": row['accepted']}
             for row in breakdown_rows
         ]
-        
+        # Archive periods
+        archive_rows = await conn.fetch(
+            'SELECT id, label, from_date, to_date, total_generated, total_accepted, total_cost_usd, archived_at '
+            'FROM archive_periods ORDER BY archived_at DESC'
+        )
+        archive_periods = [
+            {
+                "id": row['id'],
+                "label": row['label'],
+                "from_date": str(row['from_date'])[:10] if row['from_date'] else None,
+                "to_date": str(row['to_date'])[:10] if row['to_date'] else None,
+                "total_generated": row['total_generated'],
+                "total_accepted": row['total_accepted'],
+                "total_cost_usd": row['total_cost_usd'],
+                "archived_at": str(row['archived_at']) if row['archived_at'] else None,
+            }
+            for row in archive_rows
+        ]
         return {
             "total_images": total or 0,
             "accepted_images": accepted or 0,
             "batch_count": batch_count or 0,
-            "breakdown": breakdown
+            "breakdown": breakdown,
+            "archive_periods": archive_periods,
         }
 
 
 def _get_cost_statistics_sqlite(since_date: datetime) -> Dict[str, Any]:
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    
     since_str = since_date.isoformat()
-    
-    # Get total count (ALL generations for billing, including soft-deleted)
-    c.execute('SELECT COUNT(*) FROM generations WHERE created_at >= ?', (since_str,))
+
+    # Active stats (non-finalized only)
+    c.execute('SELECT COUNT(*) FROM generations WHERE created_at >= ? AND finalized_at IS NULL', (since_str,))
     total = c.fetchone()[0] or 0
-    
-    # Get accepted count (only non-deleted with tag='accept')
-    c.execute("SELECT COUNT(*) FROM generations WHERE created_at >= ? AND tag = 'accept' AND deleted_at IS NULL", (since_str,))
+
+    c.execute("SELECT COUNT(*) FROM generations WHERE created_at >= ? AND tag = 'accept' AND deleted_at IS NULL AND finalized_at IS NULL", (since_str,))
     accepted = c.fetchone()[0] or 0
-    
-    # Get batch count
-    c.execute(
-        'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= ? AND batch_id IS NOT NULL',
-        (since_str,)
-    )
+
+    c.execute('SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= ? AND batch_id IS NOT NULL AND finalized_at IS NULL', (since_str,))
     batch_count = c.fetchone()[0] or 0
-    
-    # Get daily breakdown (ALL generations for billing)
+
     c.execute('''
-        SELECT 
-            DATE(created_at) as date,
-            COUNT(*) as count,
-            SUM(CASE WHEN tag = 'accept' AND deleted_at IS NULL THEN 1 ELSE 0 END) as accepted
-        FROM generations 
-        WHERE created_at >= ?
-        GROUP BY DATE(created_at)
-        ORDER BY date DESC
-        LIMIT 30
+        SELECT DATE(created_at) as date, COUNT(*) as count,
+               SUM(CASE WHEN tag = 'accept' AND deleted_at IS NULL THEN 1 ELSE 0 END) as accepted
+        FROM generations WHERE created_at >= ? AND finalized_at IS NULL
+        GROUP BY DATE(created_at) ORDER BY date DESC LIMIT 30
     ''', (since_str,))
-    
-    breakdown = [
-        {"date": row[0], "count": row[1], "accepted": row[2] or 0}
+    breakdown = [{"date": row[0], "count": row[1], "accepted": row[2] or 0} for row in c.fetchall()]
+
+    # Archive periods
+    c.execute(
+        'SELECT id, label, from_date, to_date, total_generated, total_accepted, total_cost_usd, archived_at '
+        'FROM archive_periods ORDER BY archived_at DESC'
+    )
+    archive_periods = [
+        {
+            "id": row[0], "label": row[1],
+            "from_date": str(row[2])[:10] if row[2] else None,
+            "to_date": str(row[3])[:10] if row[3] else None,
+            "total_generated": row[4], "total_accepted": row[5],
+            "total_cost_usd": row[6], "archived_at": row[7],
+        }
         for row in c.fetchall()
     ]
-    
     conn.close()
-    
     return {
         "total_images": total,
         "accepted_images": accepted,
         "batch_count": batch_count,
-        "breakdown": breakdown
+        "breakdown": breakdown,
+        "archive_periods": archive_periods,
     }

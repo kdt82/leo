@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body, Query
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body, Query, BackgroundTasks
 from fastapi.responses import FileResponse, StreamingResponse
 from typing import List, Optional, Dict, Any
 from datetime import datetime
@@ -8,7 +8,7 @@ from app.core.config import settings
 from app.services.leonardo_client import LeonardoClient
 from app.services.queue_manager import queue_manager, JobStatus
 from app.services.storage import storage_service
-from app.services.db import get_history, get_gallery, update_tag, export_gallery, generate_export_csv, save_prompt_enhancement, get_enhancement_by_number, insert_generation
+from app.services.db import get_history, get_gallery, update_tag, export_gallery, generate_export_csv, save_prompt_enhancement, get_enhancement_by_number, insert_generation, finalize_generations
 import uuid
 import shutil
 import os
@@ -358,6 +358,7 @@ async def get_gallery_view(
     tag: Optional[str] = Query(None, description="Filter by tag: accept, maybe, declined, untagged"),
     batch: Optional[str] = Query(None, description="Filter by batch_id"),
     imp: Optional[str] = Query(None, description="Filter by Important Variant (imp)"),
+    show_archive: bool = Query(False, description="Include finalized/archived items"),
     limit: int = Query(100, description="Number of results"),
     offset: int = Query(0, description="Offset for pagination")
 ):
@@ -368,6 +369,7 @@ async def get_gallery_view(
         tag_filter=tag,
         batch_filter=batch,
         imp_filter=imp,
+        show_archive=show_archive,
         limit=limit,
         offset=offset
     )
@@ -655,6 +657,7 @@ These are NOT optional. They define the core visual identity of this batch."""
 
 @router.get("/export")
 async def export_generations(
+    background_tasks: BackgroundTasks,
     tag: Optional[str] = Query(None, description="Filter by tag: accept, maybe, declined, untagged"),
     batch: Optional[str] = Query(None, description="Filter by batch_id"),
     imp: Optional[str] = Query(None, description="Filter by Important Variant"),
@@ -683,6 +686,7 @@ async def export_generations(
     
     if format == "csv":
         # Just return the CSV
+        background_tasks.add_task(shutil.rmtree, export_dir, True)
         return FileResponse(
             csv_path, 
             media_type='text/csv', 
@@ -721,16 +725,91 @@ async def export_generations(
             new_name = f"{'__'.join(new_name_parts)}{ext}"
             shutil.copy2(record['local_path'], os.path.join(images_dir, new_name))
     
-    # Create ZIP
-    zip_base = os.path.join(export_dir, "export")
+    # Create ZIP in a SEPARATE temp dir to avoid self-inclusion bug
+    # (if zip_base is inside export_dir, shutil.make_archive includes the
+    # partially-written zip in the archive, producing a multi-GB corrupt file)
+    zip_dir = tempfile.mkdtemp(prefix="leonardo_zip_")
+    zip_base = os.path.join(zip_dir, "export")
     shutil.make_archive(zip_base, 'zip', export_dir)
     zip_path = f"{zip_base}.zip"
-    
+
+    # Clean up both temp dirs after the response is sent
+    background_tasks.add_task(shutil.rmtree, export_dir, True)
+    background_tasks.add_task(shutil.rmtree, zip_dir, True)
+
     return FileResponse(
         zip_path,
         media_type='application/zip',
         filename=f"leonardo_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
     )
+
+
+@router.post("/export/finals")
+async def export_finals(background_tasks: BackgroundTasks):
+    """
+    Export all accepted (non-archived) images as a ZIP, then archive the entire
+    current batch. Gallery will appear clear until new generations are added.
+    Use GET /gallery?show_archive=true to view archived items.
+    """
+    # Grab accepted non-finalized records BEFORE finalizing
+    records = await export_gallery(tag_filter='accept')
+
+    if not records:
+        raise HTTPException(status_code=404, detail="No accepted images to export as Finals")
+
+    # Enrich with enhancement data
+    for record in records:
+        if record.get('prompt_number') and not record.get('enhanced_prompt'):
+            enhancement = await get_enhancement_by_number(record['prompt_number'])
+            if enhancement:
+                record['original_prompt'] = enhancement.get('original_prompt')
+                record['enhanced_prompt'] = enhancement.get('enhanced_prompt')
+
+    # Build export directory with images + CSV
+    export_dir = tempfile.mkdtemp(prefix="leonardo_finals_")
+    csv_path = os.path.join(export_dir, "index.csv")
+    generate_export_csv(records, csv_path)
+
+    images_dir = os.path.join(export_dir, "images")
+    os.makedirs(images_dir, exist_ok=True)
+
+    for record in records:
+        if record.get('local_path') and os.path.exists(record['local_path']):
+            prompt_num = record.get('prompt_number') or record.get('parsed_number')
+            if not prompt_num and record.get('prompt'):
+                num_match = re.match(r'^(\d+)[\t\s]', record['prompt'])
+                if num_match:
+                    prompt_num = num_match.group(1)
+            prompt_num = prompt_num or 'unknown'
+            tag_str = record.get('tag') or 'untagged'
+            seed = record.get('seed') or 'random'
+            imp_val = record.get('imp')
+            ext = os.path.splitext(record['local_path'])[1]
+            new_name_parts = [str(prompt_num)]
+            if imp_val:
+                new_name_parts.append(f"imp={imp_val}")
+            new_name_parts.append(f"{tag_str}_{seed}")
+            shutil.copy2(record['local_path'], os.path.join(images_dir, f"{'__'.join(new_name_parts)}{ext}"))
+
+    # Archive ALL active generations (creates archive_period record)
+    archive_result = await finalize_generations()
+    print(f"[FINALS] Archived: {archive_result}")
+
+    # Create zip in a SEPARATE temp dir (avoid self-inclusion bug)
+    zip_dir = tempfile.mkdtemp(prefix="leonardo_zip_")
+    zip_base = os.path.join(zip_dir, f"finals_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+    shutil.make_archive(zip_base, 'zip', export_dir)
+    zip_path = f"{zip_base}.zip"
+
+    background_tasks.add_task(shutil.rmtree, export_dir, True)
+    background_tasks.add_task(shutil.rmtree, zip_dir, True)
+
+    return FileResponse(
+        zip_path,
+        media_type='application/zip',
+        filename=f"finals_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+    )
+
 
 # === User & Models ===
 
@@ -1040,6 +1119,8 @@ async def get_cost_stats(
     
     total_images = stats.get("total_images", 0)
     total_cost = total_images * cost_per_image
+    archive_periods = stats.get("archive_periods", [])
+    archived_cost = sum(p.get("total_cost_usd", 0) or 0 for p in archive_periods)
     
     return {
         "since": since,
@@ -1047,6 +1128,8 @@ async def get_cost_stats(
         "accepted_images": stats.get("accepted_images", 0),
         "cost_per_image": cost_per_image,
         "total_cost_usd": round(total_cost, 2),
+        "total_cost_all_time_usd": round(total_cost + archived_cost, 2),
         "batches": stats.get("batch_count", 0),
-        "breakdown": stats.get("breakdown", [])
+        "breakdown": stats.get("breakdown", []),
+        "archive_periods": archive_periods,
     }

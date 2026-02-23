@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, Receipt, Trash2 } from 'lucide-react';
+import { Play, Upload, Image as ImageIcon, X, Loader2, AlertCircle, Download, ChevronDown, ChevronUp, Sparkles, Info, Layers, Wand2, Copy, Check, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, Receipt, Trash2, Archive, Eye, EyeOff } from 'lucide-react';
 import { apiClient, getOpenAIKey, getOpenAIModel, getApiKey, API_URL } from '../api/client';
 import clsx from 'clsx';
 
@@ -1571,6 +1571,7 @@ function GalleryView() {
     const [tagFilter, setTagFilter] = useState('');
     const [batchFilter, setBatchFilter] = useState('');
     const [impFilter, setImpFilter] = useState('');
+    const [showArchive, setShowArchive] = useState(false);
     const [page, setPage] = useState(0);
 
     const IMPORTANT_VARIANTS = [
@@ -1637,6 +1638,7 @@ function GalleryView() {
             if (tagFilter) params.append('tag', tagFilter);
             if (batchFilter) params.append('batch', batchFilter);
             if (impFilter) params.append('imp', impFilter);
+            if (showArchive) params.append('show_archive', 'true');
 
             const res = await apiClient.get(`/gallery?${params.toString()}`);
             setGallery(res.data);
@@ -1673,7 +1675,7 @@ function GalleryView() {
 
     useEffect(() => {
         fetchGallery();
-    }, [sortBy, sortOrder, tagFilter, batchFilter, impFilter, page]);
+    }, [sortBy, sortOrder, tagFilter, batchFilter, impFilter, showArchive, page]);
 
     const handleExport = async (format: 'csv' | 'zip') => {
         const params = new URLSearchParams({ format });
@@ -1682,6 +1684,42 @@ function GalleryView() {
         if (impFilter) params.append('imp', impFilter);
 
         window.open(`${API_URL}/export?${params.toString()}`, '_blank');
+    };
+
+    const handleExportFinals = async () => {
+        const acceptedCount = gallery.tag_counts?.['accept'] || 0;
+        if (acceptedCount === 0) {
+            alert('No accepted images to export as Finals.');
+            return;
+        }
+        if (!confirm(
+            `Export ${acceptedCount} accepted image${acceptedCount !== 1 ? 's' : ''} as FINALS?\n\n` +
+            `This will:\n` +
+            `  • Download a ZIP of all accepted images\n` +
+            `  • Archive ALL current images (accepted, declined, untagged)\n` +
+            `  • Clear the gallery ready for the next batch\n\n` +
+            `Use "Show Archive" to view previous Finals at any time.`
+        )) return;
+
+        setLoading(true);
+        try {
+            const res = await apiClient.post('/export/finals', {}, { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/zip' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `finals_${new Date().toISOString().slice(0, 10)}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            await fetchGallery();
+            alert('Finals exported and archived successfully! Gallery is now clear for the next batch.');
+        } catch (e: any) {
+            console.error('Export Finals failed:', e);
+            alert('Export failed. Check console for details.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleTag = async (id: string, tag: string) => {
@@ -1731,7 +1769,7 @@ function GalleryView() {
                 </div>
 
                 {/* Export Buttons */}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <button
                         onClick={handleSync}
                         disabled={loading}
@@ -1753,6 +1791,28 @@ function GalleryView() {
                     >
                         <Download className="w-4 h-4" />
                         Export ZIP
+                    </button>
+                    <button
+                        onClick={handleExportFinals}
+                        disabled={loading}
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                        title="Export accepted images as Finals and archive current batch"
+                    >
+                        <Archive className="w-4 h-4" />
+                        Export as Finals
+                    </button>
+                    <button
+                        onClick={() => { setShowArchive(v => !v); setPage(0); }}
+                        className={clsx(
+                            "px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2",
+                            showArchive
+                                ? "bg-amber-900/50 border border-amber-600 text-amber-300 hover:bg-amber-900/70"
+                                : "bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-transparent"
+                        )}
+                        title="Show previously archived generations"
+                    >
+                        {showArchive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        {showArchive ? 'Archive ON' : 'Show Archive'}
                     </button>
                 </div>
             </div>
@@ -1937,6 +1997,14 @@ function GalleryView() {
                                     {item.tag === 'accept' && '✓'}
                                     {item.tag === 'maybe' && '?'}
                                     {item.tag === 'declined' && '✗'}
+                                </div>
+                            )}
+
+                            {/* Archived Badge */}
+                            {item.finalized_at && (
+                                <div className="absolute bottom-1 left-1 bg-amber-700/90 text-amber-200 px-1 py-0.5 rounded text-xs flex items-center gap-0.5">
+                                    <Archive className="w-2.5 h-2.5" />
+                                    <span>archived</span>
                                 </div>
                             )}
 
@@ -2763,9 +2831,16 @@ function CostView() {
         total_images: number;
         accepted_images: number;
         total_cost_usd: number;
+        total_cost_all_time_usd: number;
         batches: number;
         since: string;
         breakdown: Array<{ date: string; count: number; accepted: number }>;
+        archive_periods: Array<{
+            id: number; label: string;
+            from_date: string; to_date: string;
+            total_generated: number; total_accepted: number;
+            total_cost_usd: number; archived_at: string;
+        }>;
     } | null>(null);
 
     useEffect(() => {
@@ -2780,11 +2855,16 @@ function CostView() {
         </div>
     );
 
-    // Format date for display
     const formatDate = (dateStr: string) => {
+        if (!dateStr) return '—';
         const date = new Date(dateStr);
         return date.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     };
+
+    const archivePeriods = costStats.archive_periods || [];
+    const hasArchives = archivePeriods.length > 0;
+    const allTimeGenerated = costStats.total_images + archivePeriods.reduce((s, p) => s + p.total_generated, 0);
+    const allTimeAccepted = costStats.accepted_images + archivePeriods.reduce((s, p) => s + p.total_accepted, 0);
 
     return (
         <div className="h-full overflow-y-auto bg-background p-8">
@@ -2797,25 +2877,43 @@ function CostView() {
                         Billing & Usage Report
                     </h1>
                     <p className="text-zinc-400 mt-2 ml-14">
-                        Detailed historical breakdown of generation costs and usage since {costStats.since}.
+                        {hasArchives
+                            ? `Active batch + ${archivePeriods.length} archived batch${archivePeriods.length !== 1 ? 'es' : ''}.`
+                            : `Detailed breakdown of generation costs since ${costStats.since}.`}
                     </p>
                 </header>
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                        <div className="text-zinc-400 text-sm font-medium mb-2">Total Generated</div>
-                        <div className="text-3xl font-bold text-white">{costStats.total_images.toLocaleString()}</div>
-                        <div className="text-xs text-zinc-500 mt-1">images created</div>
+                        <div className="text-zinc-400 text-sm font-medium mb-2">
+                            {hasArchives ? 'All-time Generated' : 'Total Generated'}
+                        </div>
+                        <div className="text-3xl font-bold text-white">
+                            {hasArchives ? allTimeGenerated.toLocaleString() : costStats.total_images.toLocaleString()}
+                        </div>
+                        {hasArchives && (
+                            <div className="text-xs text-zinc-500 mt-1">{costStats.total_images} active</div>
+                        )}
+                        {!hasArchives && <div className="text-xs text-zinc-500 mt-1">images created</div>}
                     </div>
                     <div className="bg-zinc-900/50 border border-green-800/50 rounded-xl p-6">
-                        <div className="text-zinc-400 text-sm font-medium mb-2">Accepted</div>
-                        <div className="text-3xl font-bold text-green-400">{costStats.accepted_images.toLocaleString()}</div>
-                        <div className="text-xs text-zinc-500 mt-1">images kept</div>
+                        <div className="text-zinc-400 text-sm font-medium mb-2">
+                            {hasArchives ? 'All-time Accepted' : 'Accepted'}
+                        </div>
+                        <div className="text-3xl font-bold text-green-400">
+                            {hasArchives ? allTimeAccepted.toLocaleString() : costStats.accepted_images.toLocaleString()}
+                        </div>
+                        {hasArchives && (
+                            <div className="text-xs text-zinc-500 mt-1">{costStats.accepted_images} active</div>
+                        )}
+                        {!hasArchives && <div className="text-xs text-zinc-500 mt-1">images kept</div>}
                     </div>
                     <div className="bg-zinc-900/50 border border-emerald-800/50 rounded-xl p-6">
                         <div className="text-zinc-400 text-sm font-medium mb-2">Total Cost (USD)</div>
-                        <div className="text-3xl font-bold text-emerald-400">${costStats.total_cost_usd.toFixed(2)}</div>
+                        <div className="text-3xl font-bold text-emerald-400">
+                            ${(costStats.total_cost_all_time_usd ?? costStats.total_cost_usd).toFixed(2)}
+                        </div>
                         <div className="text-xs text-zinc-500 mt-1">@ $0.10 per image</div>
                     </div>
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
@@ -2825,15 +2923,61 @@ function CostView() {
                     </div>
                 </div>
 
-                {/* Daily Breakdown Cards */}
+                {/* Archived Batches */}
+                {hasArchives && (
+                    <div className="mb-8">
+                        <h3 className="font-semibold text-zinc-200 flex items-center gap-2 mb-4">
+                            <Archive className="w-4 h-4 text-amber-500" />
+                            Archived Batches
+                        </h3>
+                        <div className="space-y-3">
+                            {archivePeriods.map((period) => (
+                                <div key={period.id} className="bg-amber-900/10 border border-amber-700/30 rounded-xl p-5 hover:border-amber-600/50 transition-colors">
+                                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <Archive className="w-4 h-4 text-amber-400" />
+                                                <span className="font-semibold text-amber-300">{period.label}</span>
+                                                <span className="text-xs text-zinc-500">
+                                                    archived {period.archived_at ? formatDate(period.archived_at.split('T')[0]) : ''}
+                                                </span>
+                                            </div>
+                                            <div className="text-xs text-zinc-500 mt-1 ml-6">
+                                                {formatDate(period.from_date)} → {formatDate(period.to_date)}
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-6 md:gap-10">
+                                            <div className="text-center">
+                                                <div className="text-xl font-bold text-white">{period.total_generated}</div>
+                                                <div className="text-xs text-zinc-500 uppercase">Generated</div>
+                                            </div>
+                                            <div className="text-center">
+                                                <div className="text-xl font-bold text-green-400">{period.total_accepted}</div>
+                                                <div className="text-xs text-zinc-500 uppercase">Accepted</div>
+                                            </div>
+                                            <div className="text-center">
+                                                <div className="text-xl font-bold text-emerald-400">${period.total_cost_usd?.toFixed(2)}</div>
+                                                <div className="text-xs text-zinc-500 uppercase">Cost</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Active Daily Breakdown */}
                 <h3 className="font-semibold text-zinc-200 flex items-center gap-2 mb-4">
                     <FileSpreadsheet className="w-4 h-4 text-zinc-500" />
-                    Daily Breakdown
+                    {hasArchives ? 'Active Batch Breakdown' : 'Daily Breakdown'}
                 </h3>
-                
+
                 {costStats.breakdown.length === 0 ? (
                     <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500 italic">
-                        No generation history found for this period.
+                        {hasArchives
+                            ? 'No active generations yet — ready for the next batch!'
+                            : 'No generation history found for this period.'}
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -2861,11 +3005,11 @@ function CostView() {
                                 </div>
                             </div>
                         ))}
-                        
-                        {/* Total Row */}
+
+                        {/* Active Total Row */}
                         <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-6">
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div className="text-lg font-bold text-white">Total</div>
+                                <div className="text-lg font-bold text-white">Active Total</div>
                                 <div className="flex gap-6 md:gap-12">
                                     <div className="text-center">
                                         <div className="text-2xl font-bold text-white">{costStats.total_images}</div>
