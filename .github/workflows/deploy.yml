@@ -19,7 +19,22 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             cd /opt/apps/leo
+            
+            # Check if .env file exists
+            if [ ! -f ".env" ]; then
+              echo "ERROR: .env file not found at /opt/apps/leo/.env"
+              echo "Please create the .env file with required configuration."
+              echo "Reference: .env.example"
+              exit 1
+            fi
+            
+            echo "Pulling latest changes..."
             git pull origin main
+            
+            echo "Building Docker images..."
             docker compose build --no-cache frontend backend
+            
+            echo "Starting containers..."
             docker compose up -d
+            
             echo "Deployment completed at $(date)"
