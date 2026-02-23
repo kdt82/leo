@@ -125,10 +125,10 @@ async def process_generation_job(job: Job) -> Dict[str, Any]:
                     "initImageType": "UPLOADED",
                     "preprocessorId": preprocessor_id,
                     "strengthType": strength_type,
-                    "weight": min(strength * 2, 2.0),
+                    "weight": strength,  # Use strength directly (0-1 range) to avoid suppressing prompt environment details
                     "influence": influence
                 })
-                print(f"[DEBUG] ControlNet {idx+1}: imageId={img_id}, influence={influence:.2f}")
+                print(f"[DEBUG] ControlNet {idx+1}: imageId={img_id}, influence={influence:.2f}, weight={strength:.2f}")
             
             submit_kwargs["controlnets"] = controlnets
             print(f"[DEBUG] Using {len(controlnets)} {reference_mode.upper()} Reference ControlNets")
@@ -180,14 +180,14 @@ async def process_generation_job(job: Job) -> Dict[str, Any]:
                 "initImageType": "UPLOADED",
                 "preprocessorId": preprocessor_id,
                 "strengthType": strength_type,
-                "weight": min(strength * 2, 2.0)  # Scale weight (0-2 range)
+                "weight": strength  # Use strength directly (0-1 range) to avoid suppressing prompt environment details
             }]
             
             print(f"[DEBUG] Using {reference_mode.upper()} Reference ControlNet:")
             print(f"  - preprocessorId: {preprocessor_id}")
             print(f"  - initImageId: {init_image_id}")
             print(f"  - strengthType: {strength_type}")
-            print(f"  - weight: {min(strength * 2, 2.0)}")
+            print(f"  - weight: {strength}")
 
     # User Element/LoRA support - Leonardo uses "userElements" with "userLoraId" (numeric)
     if prompt_data.get("userElements"):

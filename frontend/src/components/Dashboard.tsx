@@ -832,10 +832,13 @@ function GeneratorView({ apiKey, onBatchComplete }: { apiKey: string, onBatchCom
                             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 space-y-3 mt-2">
                                 {/* Flux Kontext info message */}
                                 {isFluxKontext && (
-                                    <div className="p-2 bg-amber-950/30 border border-amber-800/30 rounded text-[10px] text-amber-300">
-                                        <div className="font-semibold mb-1">⚡ Flux Kontext Mode</div>
-                                        <p className="text-amber-300/80">
-                                            Flux Kontext uses context-based image guidance. Reference type and strength controls are not available - the model will intelligently use your reference images to guide generation.
+                                    <div className="p-2 bg-red-950/40 border border-red-800/40 rounded text-[10px] text-red-300">
+                                        <div className="font-semibold mb-1">⚠️ Flux Kontext + Reference Images Warning</div>
+                                        <p className="text-red-300/90 mb-1">
+                                            <strong>Flux Kontext anchors the ENTIRE scene to your reference images</strong> — including the background, lighting, and environment. Prompt details like forests, glows, and auras will be ignored.
+                                        </p>
+                                        <p className="text-red-300/70">
+                                            💡 <strong>For character consistency with new backgrounds:</strong> Switch to a non-Flux model (e.g. Leonardo Phoenix) and use <em>Character Reference</em> mode at 50–60% strength instead.
                                         </p>
                                     </div>
                                 )}
