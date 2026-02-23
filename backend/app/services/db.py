@@ -407,8 +407,9 @@ async def _finalize_generations_postgres() -> Dict[str, Any]:
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
-            'SELECT COUNT(*) as total, MIN(created_at) as from_date, MAX(created_at) as to_date '
-            'FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL'
+            f"SELECT COUNT(*) as total, MIN(created_at) as from_date, MAX(created_at) as to_date "
+            f"FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL "
+            f"AND created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}'"
         )
         total, from_date, to_date = row['total'] or 0, row['from_date'], row['to_date']
 
@@ -416,7 +417,8 @@ async def _finalize_generations_postgres() -> Dict[str, Any]:
             return {"success": False, "message": "Nothing to archive"}
 
         accepted = await conn.fetchval(
-            "SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL AND tag = 'accept'"
+            f"SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL "
+            f"AND tag = 'accept' AND created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}'"
         )
         label_num = (await conn.fetchval('SELECT COUNT(*) FROM archive_periods') or 0) + 1
         label = f"Finals #{label_num}"
@@ -428,7 +430,8 @@ async def _finalize_generations_postgres() -> Dict[str, Any]:
             label, from_date, to_date, total, accepted, total_cost
         )
         await conn.execute(
-            'UPDATE generations SET finalized_at = CURRENT_TIMESTAMP WHERE finalized_at IS NULL AND deleted_at IS NULL'
+            f"UPDATE generations SET finalized_at = CURRENT_TIMESTAMP "
+            f"WHERE finalized_at IS NULL AND deleted_at IS NULL AND created_at >= TIMESTAMP '{GALLERY_DATE_CUTOFF}'"
         )
         return {"success": True, "label": label, "total_archived": total,
                 "accepted_archived": accepted, "total_cost_usd": total_cost}
@@ -439,8 +442,8 @@ def _finalize_generations_sqlite() -> Dict[str, Any]:
     c = conn.cursor()
 
     c.execute(
-        'SELECT COUNT(*), MIN(created_at), MAX(created_at) FROM generations '
-        'WHERE finalized_at IS NULL AND deleted_at IS NULL'
+        f'SELECT COUNT(*), MIN(created_at), MAX(created_at) FROM generations '
+        f"WHERE finalized_at IS NULL AND deleted_at IS NULL AND created_at >= '{GALLERY_DATE_CUTOFF}'"
     )
     row = c.fetchone()
     total, from_date, to_date = row[0] or 0, row[1], row[2]
@@ -450,7 +453,8 @@ def _finalize_generations_sqlite() -> Dict[str, Any]:
         return {"success": False, "message": "Nothing to archive"}
 
     c.execute(
-        "SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL AND tag = 'accept'"
+        f"SELECT COUNT(*) FROM generations WHERE finalized_at IS NULL AND deleted_at IS NULL "
+        f"AND tag = 'accept' AND created_at >= '{GALLERY_DATE_CUTOFF}'"
     )
     accepted = c.fetchone()[0] or 0
 
@@ -465,7 +469,8 @@ def _finalize_generations_sqlite() -> Dict[str, Any]:
         (label, from_date, to_date, total, accepted, total_cost)
     )
     c.execute(
-        "UPDATE generations SET finalized_at = datetime('now') WHERE finalized_at IS NULL AND deleted_at IS NULL"
+        f"UPDATE generations SET finalized_at = datetime('now') "
+        f"WHERE finalized_at IS NULL AND deleted_at IS NULL AND created_at >= '{GALLERY_DATE_CUTOFF}'"
     )
     conn.commit()
     conn.close()
