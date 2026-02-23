@@ -116,7 +116,7 @@ async def _init_postgres():
                 total_cost_usd REAL,
                 archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        '''
+        ''')
 
 
 def _init_sqlite():
