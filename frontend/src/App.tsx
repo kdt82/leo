@@ -211,40 +211,38 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
 
         {/* Show message if API key is from environment */}
         {fromEnv && !isWelcome && (
-          <div className="p-4 bg-green-900/20 border border-green-800/50 rounded-lg mb-4">
-            <div className="flex items-center gap-2 text-green-400 mb-2">
+          <div className="p-4 bg-blue-900/20 border border-blue-800/50 rounded-lg mb-4">
+            <div className="flex items-center gap-2 text-blue-400 mb-2">
               <Lock className="w-4 h-4" />
-              <span className="font-medium">API Key from Environment</span>
+              <span className="font-medium">Currently using Environment Variable</span>
             </div>
             <p className="text-sm text-zinc-400">
-              Loaded from <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">VITE_LEONARDOAI_API_KEY</code> in <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">.env</code>
+              Loaded from <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">VITE_LEONARDOAI_API_KEY</code>. You can override it below.
             </p>
           </div>
         )}
 
-        {/* Only show input if NOT from environment */}
-        {!fromEnv && (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-zinc-400">API Key</label>
-            <div className="flex gap-2">
-              <input
-                type="password"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                placeholder="Enter your Leonardo AI API key..."
-              />
-              <button
-                onClick={verify}
-                disabled={loading}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50"
-              >
-                {loading ? 'Verifying...' : 'Save'}
-              </button>
-            </div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+        {/* Always show input */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-zinc-400">API Key</label>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              placeholder="Enter your Leonardo AI API key..."
+            />
+            <button
+              onClick={verify}
+              disabled={loading}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50"
+            >
+              {loading ? 'Verifying...' : 'Save'}
+            </button>
           </div>
-        )}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+        </div>
       </div>
 
       {/* === OpenAI Section (for prompt enhancement) === */}
@@ -256,65 +254,62 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
           </h3>
 
           {/* OpenAI API Key */}
-          {openaiKeyFromEnv ? (
-            <div className="p-4 bg-green-900/20 border border-green-800/50 rounded-lg mb-4">
-              <div className="flex items-center gap-2 text-green-400 mb-2">
+          {openaiKeyFromEnv && !isWelcome && (
+            <div className="p-4 bg-blue-900/20 border border-blue-800/50 rounded-lg mb-4">
+              <div className="flex items-center gap-2 text-blue-400 mb-2">
                 <Lock className="w-4 h-4" />
-                <span className="font-medium">API Key from Environment</span>
+                <span className="font-medium">Currently using Environment Variable</span>
               </div>
               <p className="text-sm text-zinc-400">
-                Loaded from <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">VITE_OPENAI_API_KEY</code>
+                Loaded from <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">VITE_OPENAI_API_KEY</code>. You can override it below.
               </p>
             </div>
-          ) : (
-            <div className="flex flex-col gap-2 mb-4">
-              <label className="text-sm font-medium text-zinc-400">OpenAI API Key</label>
-              <input
-                type="password"
-                value={openaiKey}
-                onChange={e => setOpenaiKey(e.target.value)}
-                className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                placeholder="sk-..."
-              />
-            </div>
           )}
+
+          <div className="flex flex-col gap-2 mb-4">
+            <label className="text-sm font-medium text-zinc-400">OpenAI API Key</label>
+            <input
+              type="password"
+              value={openaiKey}
+              onChange={e => setOpenaiKey(e.target.value)}
+              className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              placeholder="sk-..."
+            />
+          </div>
 
           {/* OpenAI Model */}
-          {openaiModelFromEnv ? (
-            <div className="p-4 bg-green-900/20 border border-green-800/50 rounded-lg mb-4">
-              <div className="flex items-center gap-2 text-green-400 mb-2">
+          {openaiModelFromEnv && !isWelcome && (
+            <div className="p-4 bg-blue-900/20 border border-blue-800/50 rounded-lg mb-4">
+              <div className="flex items-center gap-2 text-blue-400 mb-2">
                 <Lock className="w-4 h-4" />
-                <span className="font-medium">Model from Environment</span>
+                <span className="font-medium">Currently using Environment Variable</span>
               </div>
               <p className="text-sm text-zinc-400">
-                Using <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">{import.meta.env.VITE_OPENAI_MODEL}</code>
+                Using <code className="px-1 py-0.5 bg-zinc-800 rounded text-xs">{import.meta.env.VITE_OPENAI_MODEL}</code>. You can override it below.
               </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2 mb-4">
-              <label className="text-sm font-medium text-zinc-400">Model</label>
-              <select
-                value={openaiModel}
-                onChange={e => setOpenaiModel(e.target.value)}
-                className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              >
-                <option value="gpt-4o-mini">GPT-4o Mini (Fast, Affordable)</option>
-                <option value="gpt-4o">GPT-4o (Best Quality)</option>
-                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Fastest)</option>
-              </select>
             </div>
           )}
 
-          {/* Save button (only if not all from env) */}
-          {(!openaiKeyFromEnv || !openaiModelFromEnv) && (
-            <button
-              onClick={saveOpenAI}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium"
+          <div className="flex flex-col gap-2 mb-4">
+            <label className="text-sm font-medium text-zinc-400">Model</label>
+            <select
+              value={openaiModel}
+              onChange={e => setOpenaiModel(e.target.value)}
+              className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             >
-              Save OpenAI Settings
-            </button>
-          )}
+              <option value="gpt-4o-mini">GPT-4o Mini (Fast, Affordable)</option>
+              <option value="gpt-4o">GPT-4o (Best Quality)</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+              <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Fastest)</option>
+            </select>
+          </div>
+
+          <button
+            onClick={saveOpenAI}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium"
+          >
+            Save OpenAI Settings
+          </button>
 
           <p className="text-xs text-zinc-600 mt-4">
             OpenAI is used for the Prompt Studio feature to enhance your prompts with better descriptions.
