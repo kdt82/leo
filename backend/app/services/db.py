@@ -105,18 +105,21 @@ async def _init_postgres():
             pass
 
         # Create archive_periods table to track finalized batches
-        await conn.execute('''
-            CREATE TABLE IF NOT EXISTS archive_periods (
-                id SERIAL PRIMARY KEY,
-                label TEXT,
-                from_date TIMESTAMP,
-                to_date TIMESTAMP,
-                total_generated INTEGER,
-                total_accepted INTEGER,
-                total_cost_usd REAL,
-                archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
+        try:
+            await conn.execute('''
+                CREATE TABLE IF NOT EXISTS archive_periods (
+                    id SERIAL PRIMARY KEY,
+                    label TEXT,
+                    from_date TIMESTAMP,
+                    to_date TIMESTAMP,
+                    total_generated INTEGER,
+                    total_accepted INTEGER,
+                    total_cost_usd REAL,
+                    archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+        except Exception:
+            pass  # Table already exists (concurrent worker race on first boot)
 
 
 def _init_sqlite():
