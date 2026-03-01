@@ -16,7 +16,7 @@ jobs:
           host: ${{ secrets.VPS_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.VPS_SSH_PORT }}
+          port: ${{ secrets.VPS_SSH_PORT || 22 }}
           command_timeout: 60m
           script: |
             set -e

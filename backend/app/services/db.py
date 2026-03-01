@@ -93,33 +93,39 @@ async def _init_postgres():
         await conn.execute('CREATE INDEX IF NOT EXISTS idx_generations_created_at ON generations(created_at)')
         
         # Add deleted_at column for soft-delete (billing retains all records)
-        try:
+        # Check if column exists first to avoid error messages
+        column_exists = await conn.fetchval('''
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name='generations' AND column_name='deleted_at'
+            )
+        ''')
+        if not column_exists:
             await conn.execute('ALTER TABLE generations ADD COLUMN deleted_at TIMESTAMP')
-        except Exception:
-            pass  # Column already exists
 
         # Add finalized_at column for "Export as Finals" archiving
-        try:
+        column_exists = await conn.fetchval('''
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.columns 
+                WHERE table_name='generations' AND column_name='finalized_at'
+            )
+        ''')
+        if not column_exists:
             await conn.execute('ALTER TABLE generations ADD COLUMN finalized_at TIMESTAMP')
-        except Exception:
-            pass
 
         # Create archive_periods table to track finalized batches
-        try:
-            await conn.execute('''
-                CREATE TABLE IF NOT EXISTS archive_periods (
-                    id SERIAL PRIMARY KEY,
-                    label TEXT,
-                    from_date TIMESTAMP,
-                    to_date TIMESTAMP,
-                    total_generated INTEGER,
-                    total_accepted INTEGER,
-                    total_cost_usd REAL,
-                    archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            ''')
-        except Exception:
-            pass  # Table already exists (concurrent worker race on first boot)
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS archive_periods (
+                id SERIAL PRIMARY KEY,
+                label TEXT,
+                from_date TIMESTAMP,
+                to_date TIMESTAMP,
+                total_generated INTEGER,
+                total_accepted INTEGER,
+                total_cost_usd REAL,
+                archived_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
 
 
 def _init_sqlite():
