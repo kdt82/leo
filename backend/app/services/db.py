@@ -878,9 +878,9 @@ async def get_cost_statistics(since_date: datetime) -> Dict[str, Any]:
 async def _get_cost_statistics_postgres(since_date: datetime) -> Dict[str, Any]:
     pool = await get_pool()
     async with pool.acquire() as conn:
-        # Active stats (non-finalized only)
+        # Active stats (non-finalized, non-deleted only)
         total = await conn.fetchval(
-            'SELECT COUNT(*) FROM generations WHERE created_at >= $1 AND finalized_at IS NULL',
+            'SELECT COUNT(*) FROM generations WHERE created_at >= $1 AND finalized_at IS NULL AND deleted_at IS NULL',
             since_date
         )
         accepted = await conn.fetchval(
@@ -888,7 +888,7 @@ async def _get_cost_statistics_postgres(since_date: datetime) -> Dict[str, Any]:
             since_date
         )
         batch_count = await conn.fetchval(
-            'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= $1 AND batch_id IS NOT NULL AND finalized_at IS NULL',
+            'SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= $1 AND batch_id IS NOT NULL AND finalized_at IS NULL AND deleted_at IS NULL',
             since_date
         )
         breakdown_rows = await conn.fetch('''
@@ -897,7 +897,7 @@ async def _get_cost_statistics_postgres(since_date: datetime) -> Dict[str, Any]:
                 COUNT(*) as count,
                 COUNT(*) FILTER (WHERE tag = 'accept' AND deleted_at IS NULL) as accepted
             FROM generations 
-            WHERE created_at >= $1 AND finalized_at IS NULL
+            WHERE created_at >= $1 AND finalized_at IS NULL AND deleted_at IS NULL
             GROUP BY DATE(created_at)
             ORDER BY date DESC
             LIMIT 30
@@ -938,20 +938,20 @@ def _get_cost_statistics_sqlite(since_date: datetime) -> Dict[str, Any]:
     c = conn.cursor()
     since_str = since_date.isoformat()
 
-    # Active stats (non-finalized only)
-    c.execute('SELECT COUNT(*) FROM generations WHERE created_at >= ? AND finalized_at IS NULL', (since_str,))
+    # Active stats (non-finalized, non-deleted only)
+    c.execute('SELECT COUNT(*) FROM generations WHERE created_at >= ? AND finalized_at IS NULL AND deleted_at IS NULL', (since_str,))
     total = c.fetchone()[0] or 0
 
     c.execute("SELECT COUNT(*) FROM generations WHERE created_at >= ? AND tag = 'accept' AND deleted_at IS NULL AND finalized_at IS NULL", (since_str,))
     accepted = c.fetchone()[0] or 0
 
-    c.execute('SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= ? AND batch_id IS NOT NULL AND finalized_at IS NULL', (since_str,))
+    c.execute('SELECT COUNT(DISTINCT batch_id) FROM generations WHERE created_at >= ? AND batch_id IS NOT NULL AND finalized_at IS NULL AND deleted_at IS NULL', (since_str,))
     batch_count = c.fetchone()[0] or 0
 
     c.execute('''
         SELECT DATE(created_at) as date, COUNT(*) as count,
                SUM(CASE WHEN tag = 'accept' AND deleted_at IS NULL THEN 1 ELSE 0 END) as accepted
-        FROM generations WHERE created_at >= ? AND finalized_at IS NULL
+        FROM generations WHERE created_at >= ? AND finalized_at IS NULL AND deleted_at IS NULL
         GROUP BY DATE(created_at) ORDER BY date DESC LIMIT 30
     ''', (since_str,))
     breakdown = [{"date": row[0], "count": row[1], "accepted": row[2] or 0} for row in c.fetchall()]
