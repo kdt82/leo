@@ -175,6 +175,8 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
   // OpenAI settings
   const [openaiKey, setOpenaiKey] = useState(localStorage.getItem('openai_api_key') || '');
   const [openaiModel, setOpenaiModel] = useState(localStorage.getItem('openai_model') || 'gpt-4o-mini');
+  const [openaiLoading, setOpenaiLoading] = useState(false);
+  const [openaiError, setOpenaiError] = useState('');
   const openaiKeyFromEnv = !!import.meta.env.VITE_OPENAI_API_KEY;
   const openaiModelFromEnv = !!import.meta.env.VITE_OPENAI_MODEL;
 
@@ -192,10 +194,38 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
     }
   };
 
-  const saveOpenAI = () => {
-    localStorage.setItem('openai_api_key', openaiKey);
-    localStorage.setItem('openai_model', openaiModel);
-    alert('OpenAI settings saved!');
+  const saveOpenAI = async () => {
+    if (!openaiKey.trim()) {
+      setOpenaiError('Please enter an OpenAI API key');
+      return;
+    }
+
+    setOpenaiLoading(true);
+    setOpenaiError('');
+    
+    try {
+      // Test the API key with a minimal request
+      const response = await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          'Authorization': `Bearer ${openaiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: { message: 'Invalid API key' } }));
+        throw new Error(errorData.error?.message || 'Invalid API key');
+      }
+
+      // Key is valid, save it
+      localStorage.setItem('openai_api_key', openaiKey);
+      localStorage.setItem('openai_model', openaiModel);
+      alert('✓ OpenAI API key validated and saved successfully!');
+      setOpenaiError('');
+    } catch (err: any) {
+      setOpenaiError(err.message || 'Failed to validate API key');
+    } finally {
+      setOpenaiLoading(false);
+    }
   };
 
   return (
@@ -271,10 +301,14 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
             <input
               type="password"
               value={openaiKey}
-              onChange={e => setOpenaiKey(e.target.value)}
+              onChange={e => {
+                setOpenaiKey(e.target.value);
+                setOpenaiError(''); // Clear error when typing
+              }}
               className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               placeholder="sk-..."
             />
+            {openaiError && <p className="text-red-400 text-sm">{openaiError}</p>}
           </div>
 
           {/* OpenAI Model */}
@@ -306,9 +340,11 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
 
           <button
             onClick={saveOpenAI}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium"
+            disabled={openaiLoading}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50 flex items-center gap-2 justify-center"
           >
-            Save OpenAI Settings
+            {openaiLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+            {openaiLoading ? 'Validating...' : 'Save OpenAI Settings'}
           </button>
 
           <p className="text-xs text-zinc-600 mt-4">
