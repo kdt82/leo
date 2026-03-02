@@ -195,7 +195,9 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
   };
 
   const saveOpenAI = async () => {
-    if (!openaiKey.trim()) {
+    const trimmedKey = openaiKey.trim();
+    
+    if (!trimmedKey) {
       setOpenaiError('Please enter an OpenAI API key');
       return;
     }
@@ -207,7 +209,7 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
       // Test the API key with a minimal request
       const response = await fetch('https://api.openai.com/v1/models', {
         headers: {
-          'Authorization': `Bearer ${openaiKey}`,
+          'Authorization': `Bearer ${trimmedKey}`,
         },
       });
 
@@ -216,9 +218,10 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
         throw new Error(errorData.error?.message || 'Invalid API key');
       }
 
-      // Key is valid, save it
-      localStorage.setItem('openai_api_key', openaiKey);
+      // Key is valid, save it (trimmed)
+      localStorage.setItem('openai_api_key', trimmedKey);
       localStorage.setItem('openai_model', openaiModel);
+      setOpenaiKey(trimmedKey); // Update state with trimmed version
       alert('✓ OpenAI API key validated and saved successfully!');
       setOpenaiError('');
     } catch (err: any) {
@@ -308,6 +311,11 @@ function SettingsPage({ apiKey, setApiKey, isWelcome, fromEnv }: any) {
               className="bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               placeholder="sk-..."
             />
+            {openaiKey && (
+              <p className="text-xs text-zinc-500">
+                Current: {openaiKey.substring(0, 7)}...{openaiKey.substring(openaiKey.length - 4)}
+              </p>
+            )}
             {openaiError && <p className="text-red-400 text-sm">{openaiError}</p>}
           </div>
 

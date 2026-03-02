@@ -25,8 +25,9 @@ export const isEnvApiKey = (): boolean => {
 // === OpenAI API Key ===
 export const getOpenAIKey = (): string => {
   const envKey = import.meta.env.VITE_OPENAI_API_KEY;
-  if (envKey) return envKey;
-  return localStorage.getItem('openai_api_key') || '';
+  if (envKey) return envKey.trim();
+  const storedKey = localStorage.getItem('openai_api_key') || '';
+  return storedKey.trim();
 };
 
 export const isEnvOpenAIKey = (): boolean => {

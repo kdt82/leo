@@ -406,6 +406,14 @@ async def enhance_prompts(request: PromptEnhanceRequest):
     """
     import re
     
+    # Validate and clean the API key
+    api_key = request.openai_api_key.strip()
+    if not api_key:
+        raise HTTPException(status_code=400, detail="OpenAI API key is required")
+    
+    if not api_key.startswith('sk-'):
+        raise HTTPException(status_code=400, detail="Invalid OpenAI API key format (must start with 'sk-')")
+    
     enhanced_results = []
     
     # DETAILED SYSTEM PROMPT FOR PRIORITY-WEIGHTED ENHANCEMENT
@@ -589,7 +597,7 @@ These are NOT optional. They define the core visual identity of this batch."""
                 response = await client.post(
                     "https://api.openai.com/v1/chat/completions",
                     headers={
-                        "Authorization": f"Bearer {request.openai_api_key}",
+                        "Authorization": f"Bearer {api_key}",
                         "Content-Type": "application/json"
                     },
                     json={
